@@ -1,6 +1,6 @@
 [Project]
-FileName=Assignment.dev
-Name=Assignment
+FileName=Project.dev
+Name=Project
 Type=1
 Ver=2
 ObjFiles=
@@ -12,14 +12,14 @@ MakeIncludes=
 Compiler=
 CppCompiler=
 Linker="../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_"../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_
-IsCpp=1
+IsCpp=0
 Icon=
 ExeOutput=
 ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=Assignment.exe
+OverrideOutputName=Project.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=1
+UnitCount=3
 
 [VersionInfo]
 Major=1
@@ -51,9 +51,29 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=main.cpp
-CompileCpp=1
-Folder=
+FileName=main.c
+CompileCpp=0
+Folder=Project
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=pieces.c
+CompileCpp=0
+Folder=Project
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit3]
+FileName=pieces.h
+CompileCpp=0
+Folder=Project
 Compile=1
 Link=1
 Priority=1000
