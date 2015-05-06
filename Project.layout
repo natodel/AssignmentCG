@@ -1,7 +1,7 @@
 [Editor_0]
-CursorCol=3
-CursorRow=20
-TopLine=1
+CursorCol=10
+CursorRow=40
+TopLine=20
 LeftChar=1
 Open=1
 Top=1
@@ -11,9 +11,9 @@ Order=0,1,2
 [Editor_1]
 Open=1
 Top=0
-CursorCol=41
-CursorRow=40
-TopLine=1
+CursorCol=6
+CursorRow=173
+TopLine=148
 LeftChar=1
 [Editor_2]
 Open=1
