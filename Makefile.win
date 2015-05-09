@@ -6,12 +6,12 @@ CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = main.o
 LINKOBJ  = main.o
-LIBS     = -L"C:/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc ../../../../Dev-Cpp/MinGW32/lib/libopengl32.a ../../../../Dev-Cpp/MinGW32/lib/libglu32.a ../../../../Dev-Cpp/MinGW32/lib/libglut32.a 
+LIBS     = -L"C:/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc ../../../../Dev-Cpp/MinGW32/lib/libopengl32.a ../../../../Dev-Cpp/MinGW32/lib/libglu32.a ../../../../Dev-Cpp/MinGW32/lib/libglut32.a  -g3
 INCS     = -I"C:/Dev-Cpp/MinGW32/include"
 CXXINCS  = -I"C:/Dev-Cpp/MinGW32/include"
 BIN      = demo.exe
-CXXFLAGS = $(CXXINCS) 
-CFLAGS   = $(INCS) 
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
 RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom

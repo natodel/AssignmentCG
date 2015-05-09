@@ -29,9 +29,23 @@ public:
 	}
 };
 
-vector<GLdoublePoint> vertice;
-vector<GLdoublePoint> normal;
-vector<GLPolygon> polygon;
+int mouseButton;
+int oldX, newX, oldY, newY;
+bool rotateAxisX = false;
+float rotateAngle = 0.0;
+float depth;
+
+
+//vector<GLdoublePoint> vertice;
+//vector<GLdoublePoint> normal;
+//vector<GLPolygon> polygon;
+
+
+vector<GLdoublePoint> vertice[7];
+vector<GLdoublePoint> normal[7];
+vector<GLPolygon> polygon[7];
+int nPolArr[6];
+
 int nVer, nPol, nNorm;
 
 int camX = 3;
@@ -47,59 +61,74 @@ int angle;
 int angle2;
 /* -- LOCAL VARIABLES ---------------------------------------------------- */
 
+int getIndex(string name) {
+	if (name == "king.obj") {
+		return 0;
+	} else if (name == "queen.obj") {
+		return 1;
+	} else if (name == "bishop.obj") {
+		return 2;
+	} else if (name == "knight.obj") {
+		return 3;
+	} else if (name == "rook.obj") {
+		return 4;
+	} else if (name == "pawn.obj") {
+		return 5;
+	}
+}
+
 void readfile(string name) {
 	double point_x, point_y, point_z;
 	int idx1, idx2, idx3;
 	int nor1, nor2, nor3;
+	int index = getIndex(name);
+
 
 	ifstream f_in;
 	f_in.open(name.c_str());
 
 	f_in >> nVer; f_in >> nNorm; f_in >> nPol;
+	nPolArr[index] = nPol;
 	for (int i = 0; i < nVer; i++) {
 		f_in >> point_x >> point_y >> point_z;
 		GLdoublePoint point(point_x, point_y, point_z);
-		vertice.push_back(point);
+		vertice[index].push_back(point);
 	}
 
 
 	for (int i = 0; i < nNorm; i++) {
 		f_in >> point_x >> point_y >> point_z;
 		GLdoublePoint point(point_x, point_y, point_z);
-		normal.push_back(point);
+		normal[index].push_back(point);
 	}
 
 
 	for (int i = 0; i < nPol; i++) {
 		f_in >> idx1 >> nor1 >> idx2 >> nor2 >> idx3 >> nor3;
 		GLPolygon pol(idx1, idx2, idx3, nor1, nor2, nor3);
-		polygon.push_back(pol);
+		polygon[index].push_back(pol);
 	}
-}
-
-void clear() {
-	vertice.clear();
-	normal.clear();
-	polygon.clear();
+	
 }
 
 void createChessman(string name) {
-	readfile(name);
-
+	
+	int index = getIndex(name);
+//int index = 5;
+	
 	glPushMatrix();
-	for (int i = 0; i < nPol; i++) {
+	for (int i = 0; i < nPolArr[index]; i++) {
 		glBegin(GL_POLYGON);
-		glNormal3d(normal[polygon[i].normal1 - 1].x, normal[polygon[i].normal1 - 1].y, normal[polygon[i].normal1 - 1].z);
-		glVertex3d(vertice[polygon[i].idxVer1 - 1].x, vertice[polygon[i].idxVer1 - 1].y, vertice[polygon[i].idxVer1 - 1].z);
-		glNormal3d(normal[polygon[i].normal2 - 1].x, normal[polygon[i].normal2 - 1].y, normal[polygon[i].normal2 - 1].z);
-		glVertex3d(vertice[polygon[i].idxVer2 - 1].x, vertice[polygon[i].idxVer2 - 1].y, vertice[polygon[i].idxVer2 - 1].z);
-		glNormal3d(normal[polygon[i].normal3 - 1].x, normal[polygon[i].normal3 - 1].y, normal[polygon[i].normal3 - 1].z);
-		glVertex3d(vertice[polygon[i].idxVer3 - 1].x, vertice[polygon[i].idxVer3 - 1].y, vertice[polygon[i].idxVer3 - 1].z);
+		glNormal3d(normal[index][polygon[index][i].normal1 - 1].x, normal[index][polygon[index][i].normal1 - 1].y, normal[index][polygon[index][i].normal1 - 1].z);
+		glVertex3d(vertice[index][polygon[index][i].idxVer1 - 1].x, vertice[index][polygon[index][i].idxVer1 - 1].y, vertice[index][polygon[index][i].idxVer1 - 1].z);
+		glNormal3d(normal[index][polygon[index][i].normal2 - 1].x, normal[index][polygon[index][i].normal2 - 1].y, normal[index][polygon[index][i].normal2 - 1].z);
+		glVertex3d(vertice[index][polygon[index][i].idxVer2 - 1].x, vertice[index][polygon[index][i].idxVer2 - 1].y, vertice[index][polygon[index][i].idxVer2 - 1].z);
+		glNormal3d(normal[index][polygon[index][i].normal3 - 1].x, normal[index][polygon[index][i].normal3 - 1].y, normal[index][polygon[index][i].normal3 - 1].z);
+		glVertex3d(vertice[index][polygon[index][i].idxVer3 - 1].x, vertice[index][polygon[index][i].idxVer3 - 1].y, vertice[index][polygon[index][i].idxVer3 - 1].z);
 		glEnd();
 	}
 	glPopMatrix();
 
-	clear();
 }
 
 void blackChessmen(){
@@ -488,7 +517,7 @@ void draw_whiteArea()
 void initRendering()
 
 {
-
+	
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_COLOR_MATERIAL);
@@ -517,6 +546,7 @@ void initRendering()
 
 	glEndList(); //End the display list
 
+	
 }
 
 void drawScene()
@@ -529,9 +559,18 @@ void drawScene()
 
 	glLoadIdentity();
 
-	glRotatef(-_angle, 0.0f, 1.0f, 0.0f);
-
-	glTranslatef(-4 * 1.5, 0.0, 4 * 1.5);
+//	gluLookAt(0.0, 1.0, 0.0, 0.0, 0.0, -2.0, 0.0, 1.0, 0.0);
+	
+	depth -= 0.003f;
+	
+	
+	if (rotateAxisX == true) {
+		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
+	} else {
+		glRotatef(rotateAngle, 0.0f, 1.0f, 0.0f);
+	}
+	
+	glTranslatef(-4*1.5, 0.0, 4*1.5);
 
 
 
@@ -634,6 +673,7 @@ void drawScene()
 
 	PiecesInit();
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 void update(int value) {
@@ -648,9 +688,61 @@ void update(int value) {
 	glutTimerFunc(25, update, 0);
 }
 
+void mouseEvent(int button, int state, int x, int y) 
+{
+	mouseButton = button;
+	switch(button) {
+		case GLUT_LEFT_BUTTON:
+			cout << "left btn";
+			if (state == GLUT_DOWN) {
+				oldX = x;
+				oldY = y;
+			}
+			break;
+		case GLUT_RIGHT_BUTTON:
+			break;
+		case GLUT_MIDDLE_BUTTON:
+			break;
+	}	
+}
+
+void mouseMotion(int x, int y)
+{
+	if (mouseButton == GLUT_LEFT_BUTTON) {
+		if (abs(x - oldX) > 0 && abs(x - oldX) > abs(y - oldY)) {
+			if ((x - oldX) > 0) {
+				rotateAngle += 10.0 * 0.11;
+			} else {
+				rotateAngle -= 10.0 * 0.11;
+			}
+			
+			rotateAxisX = false;
+		} else if (abs(y - oldY) > 0 && abs(y - oldY) > abs(x - oldX)) {
+			if ((y - oldY) > 0) {
+				rotateAngle += 10.0 * 0.11;
+			} else {
+				rotateAngle -= 100 * 0.11;
+			}
+			rotateAxisX = true;
+		}
+		oldX = x;
+		oldY = y;
+	}
+}
+
 int main(int argc, char** argv)
 {
+	
+	readfile("rook.obj");
+	readfile("bishop.obj");
+	readfile("king.obj");
+	readfile("knight.obj");
+	readfile("pawn.obj");
+	readfile("queen.obj");
+	
+	
 	glutInit(&argc, argv);
+	
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
@@ -658,14 +750,18 @@ int main(int argc, char** argv)
 
 	glutCreateWindow("basic shape");
 
+	
+
 	initRendering();
 
-	glutFullScreen();
+//	glutFullScreen();
 	glutDisplayFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	//	glutTimerFunc(25, update, 0);
-
+	glutMouseFunc(mouseEvent);
+	glutMotionFunc(mouseMotion);
+	
 	glutMainLoop();
 
 	return 0;
