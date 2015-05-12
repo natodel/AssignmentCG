@@ -279,6 +279,14 @@ void drawScene() {
 	glShadeModel (GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	if (rotateAxisX == true) {
+		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
+	} else {
+		glRotatef(rotateAngle, 0.0f, 1.0f, 0.0f);
+	}
 	
 	glTranslatef(-4*1.5, 0.0, 4*1.5);
 	
@@ -325,16 +333,10 @@ void drawScene() {
 	glutSwapBuffers();
 }
 
-void update(int value) {
-	_angle += 1.0f;
-
-	if (_angle > 360) {
-		_angle -= 360;
-	}
-
+void update() {
 	glutPostRedisplay();
 
-	glutTimerFunc(25, update, 0);
+//	glutTimerFunc(25, update, 0);
 }
 
 void mouseEvent(int button, int state, int x, int y) 
@@ -379,6 +381,28 @@ void mouseMotion(int x, int y)
 	}
 }
 
+void SpecialFuncKey(int key, int x, int y) {
+	switch (key) {
+		case GLUT_KEY_UP:
+			rotateAngle += 20 * 0.11;
+			rotateAxisX = true;
+			break;
+		case GLUT_KEY_DOWN:
+			rotateAngle -= 20 * 0.11;
+			rotateAxisX = true;
+			break;
+		case GLUT_KEY_LEFT:
+			rotateAngle -= 20 * 0.11;
+			rotateAxisX = false;
+			break;
+		case GLUT_KEY_RIGHT:
+			rotateAngle += 20 * 0.11;
+			rotateAxisX = false;
+			break;
+	}
+	update();
+}
+
 int main(int argc, char** argv) {
 	readfile("rook.obj");
 	readfile("bishop.obj");
@@ -399,6 +423,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(handleResize);
 	glutMouseFunc(mouseEvent);
 	glutMotionFunc(mouseMotion);
+	glutSpecialFunc(SpecialFuncKey);
 	
 	
 	glutMainLoop();
