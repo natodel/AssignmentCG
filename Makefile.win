@@ -1,4 +1,4 @@
-# Project: demo
+# Project: chess
 # Makefile created by Dev-C++ 5.4.2
 
 CPP      = g++.exe
@@ -6,12 +6,12 @@ CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = main.o board.o
 LINKOBJ  = main.o board.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a" "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a" "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"  -g3
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc "../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a" "../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a" "../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a" 
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
-BIN      = demo.exe
-CXXFLAGS = $(CXXINCS) -g3
-CFLAGS   = $(INCS) -g3
+BIN      = chess.exe
+CXXFLAGS = $(CXXINCS) 
+CFLAGS   = $(INCS) 
 RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom

@@ -1,6 +1,6 @@
 [Project]
-FileName=demo.dev
-Name=demo
+FileName=chess.dev
+Name=chess
 Type=1
 Ver=2
 ObjFiles=
@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker="../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_"../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_
+Linker="../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_"../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -19,7 +19,7 @@ ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=demo.exe
+OverrideOutputName=chess.exe
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
@@ -28,7 +28,7 @@ Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000001000000
+CompilerSettings=0000000000000000000000000
 UnitCount=3
 
 [VersionInfo]
@@ -60,8 +60,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit3]
-FileName=board.h
+[Unit2]
+FileName=board.cpp
 Folder=
 Compile=1
 Link=1
@@ -70,26 +70,18 @@ OverrideBuildCmd=0
 BuildCmd=
 CompileCpp=1
 
-[Unit6]
-FileName=..\chess\queen.obj
-Folder=demo
-Compile=0
-Link=0
+[Unit3]
+FileName=board.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit7]
-FileName=..\chess\rook.obj
-Folder=demo
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit2]
-FileName=board.cpp
+[Unit5]
+FileName=readfile.h
 CompileCpp=1
 Folder=
 Compile=1

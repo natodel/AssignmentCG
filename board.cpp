@@ -1,70 +1,25 @@
-#include <GL/gl.h>
-#include <GL/glu.h>
+
+#include<windows.h>
 #include <GL/glut.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <iostream>
 #include "board.h"
 
-GLuint _displayListId_blackArea; //The OpenGL id of the display list
-GLuint _displayListId_whiteArea; //The OpenGL id of the display list
+using namespace std;
 
-void draw_BlackArea(void)
-{
-	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
-	glTranslatef(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(1.50f, 0.0f, 0.0f);
-	glVertex3f(1.5f, 0.3f, 0.0f);
-	glVertex3f(0.0f, 0.3f, 0.0f);
-	glEnd();
+float i;
+int k = 0;
 
-	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, -1.5f);
-	glVertex3f(0.0f, 0.3f, -1.5f);
-	glVertex3f(0.0f, 0.3f, 0.0f);
-	glEnd();
-
-	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
-	glVertex3f(1.5f, 0.0f, 0.0f);
-	glVertex3f(1.5f, 0.0f, -1.5f);
-	glVertex3f(1.5f, 0.3f, -1.5f);
-	glVertex3f(1.5f, 0.3f, 0.0f);
-	glEnd();
+void draw_BlackArea() {
+	glEnable(GL_BLEND);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColor4f(0.1f, 0.1f, 0.2f, 0.5f);
+	glColorMaterial(GL_FRONT, GL_SPECULAR);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 	
 	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
-	glVertex3f(0.0f, 0.0f, -1.5f);
-	glVertex3f(1.50f, 0.0f, -1.5f);
-	glVertex3f(1.5f, 0.3f, -1.5f);
-	glVertex3f(0.0f, 0.3f, -1.5f);
-	glEnd();
-
-	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(1.50f, 0.0f, 0.0f);
-	glVertex3f(1.5f, 0.0f, -1.5f);
-	glVertex3f(0.0f, 0.0f, -1.5f);
-	glEnd();
-
-	glBegin(GL_QUADS);
-	glColor3f(0.1f, 0.1f, 0.1f);
-	glVertex3f(0.0f, 0.3f, 0.0f);
-	glVertex3f(1.50f, 0.3f, 0.0f);
-	glVertex3f(1.5f, 0.3f, -1.5f);
-	glVertex3f(0.0f, 0.3f, -1.5f);
-	glEnd();
-}
-
-void draw_whiteArea(void)
-{
-	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
 	glTranslatef(0.0f, 0.0f, 0.0f);
+	glNormal3f(0, 1, 0);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(1.50f, 0.0f, 0.0f);
 	glVertex3f(1.5f, 0.3f, 0.0f);
@@ -72,7 +27,7 @@ void draw_whiteArea(void)
 	glEnd();
 
 	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
+	glNormal3f(0, 1, 0);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, -1.5f);
 	glVertex3f(0.0f, 0.3f, -1.5f);
@@ -80,7 +35,7 @@ void draw_whiteArea(void)
 	glEnd();
 
 	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
+	glNormal3f(0, 1, 0);
 	glVertex3f(1.5f, 0.0f, 0.0f);
 	glVertex3f(1.5f, 0.0f, -1.5f);
 	glVertex3f(1.5f, 0.3f, -1.5f);
@@ -88,7 +43,7 @@ void draw_whiteArea(void)
 	glEnd();
 
 	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
+	glNormal3f(0, 1, 0);
 	glVertex3f(0.0f, 0.0f, -1.5f);
 	glVertex3f(1.50f, 0.0f, -1.5f);
 	glVertex3f(1.5f, 0.3f, -1.5f);
@@ -96,7 +51,7 @@ void draw_whiteArea(void)
 	glEnd();
 
 	glBegin(GL_QUADS);
-	glColor3f(0.05f, 0.05f, 0.05f);
+	glNormal3f(0, 1, 0);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(1.50f, 0.0f, 0.0f);
 	glVertex3f(1.5f, 0.0f, -1.5f);
@@ -104,27 +59,123 @@ void draw_whiteArea(void)
 	glEnd();
 
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glNormal3f(0, 1, 0);
 	glVertex3f(0.0f, 0.3f, 0.0f);
 	glVertex3f(1.50f, 0.3f, 0.0f);
 	glVertex3f(1.5f, 0.3f, -1.5f);
 	glVertex3f(0.0f, 0.3f, -1.5f);
 	glEnd();
+	
+	glDisable(GL_BLEND);
 }
 
-void initRendering(void)
-{
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_COLOR_MATERIAL);
-	glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
-	//Set up a display list for drawing a cube
-	_displayListId_blackArea = glGenLists(1); //Make room for the display list
-	glNewList(_displayListId_blackArea, GL_COMPILE); //Begin the display list
-	draw_BlackArea(); //Add commands for drawing a black area to the display list
-	glEndList(); //End the display list
-	//Set up a display list for drawing a cube
-	_displayListId_whiteArea = glGenLists(2); //Make room for the display list
-	glNewList(_displayListId_whiteArea, GL_COMPILE); //Begin the display list
-	draw_whiteArea(); //Add commands for drawing a black to the display list
-	glEndList(); //End the display list
+void draw_whiteArea() {
+	glEnable(GL_BLEND);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	glColorMaterial(GL_FRONT, GL_SPECULAR);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+	
+	glBegin(GL_QUADS);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glNormal3f(0, 1, 0);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.50f, 0.0f, 0.0f);
+	glVertex3f(1.5f, 0.3f, 0.0f);
+	glVertex3f(0.0f, 0.3f, 0.0f);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, -1.5f);
+	glVertex3f(0.0f, 0.3f, -1.5f);
+	glVertex3f(0.0f, 0.3f, 0.0f);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(1.5f, 0.0f, 0.0f);
+	glVertex3f(1.5f, 0.0f, -1.5f);
+	glVertex3f(1.5f, 0.3f, -1.5f);
+	glVertex3f(1.5f, 0.3f, 0.0f);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(0.0f, 0.0f, -1.5f);
+	glVertex3f(1.50f, 0.0f, -1.5f);
+	glVertex3f(1.5f, 0.3f, -1.5f);
+	glVertex3f(0.0f, 0.3f, -1.5f);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.50f, 0.0f, 0.0f);
+	glVertex3f(1.5f, 0.0f, -1.5f);
+	glVertex3f(0.0f, 0.0f, -1.5f);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(0.0f, 0.3f, 0.0f);
+	glVertex3f(1.50f, 0.3f, 0.0f);
+	glVertex3f(1.5f, 0.3f, -1.5f);
+	glVertex3f(0.0f, 0.3f, -1.5f);
+	glEnd();
+	
+	glDisable(GL_BLEND);
 }
+
+
+void drawChessBoard() {
+	_displayListId_blackArea = glGenLists(1);
+	glNewList(_displayListId_blackArea, GL_COMPILE); 
+	draw_BlackArea(); 
+	glEndList();
+
+	_displayListId_whiteArea = glGenLists(2);
+	glNewList(_displayListId_whiteArea, GL_COMPILE);
+	draw_whiteArea(); 
+	glEndList();	
+
+	for (float j = 0.0; j>(-8 * 1.5); j -= 1.5) {
+		k++;
+
+		for (i = 0.0; i<(4 * 3.0); i += 3.0) {
+			if (k % 2 == 0) {
+				glPushMatrix();
+				glTranslatef(i, 0.0, j);
+				glCallList(_displayListId_blackArea);
+				glPopMatrix();
+			}
+			else {
+				glPushMatrix();
+				glTranslatef(i + 1.5, 0.0, j);
+				glCallList(_displayListId_blackArea);
+				glPopMatrix();
+			}
+		}
+	}
+
+	for (float j = 0.0; j>(-8 * 1.5); j -= 1.5) {
+		k++;
+
+		for (i = 0.0; i<(4 * 3.0); i += 3.0) {
+			if (k % 2 != 0) {
+				glPushMatrix();
+				glTranslatef(i, 0.0, j);
+				glCallList(_displayListId_whiteArea);
+				glPopMatrix();
+			}	
+			else {
+				glPushMatrix();
+				glTranslatef(i + 1.5, 0.0, j);
+				glCallList(_displayListId_whiteArea);
+				glPopMatrix();
+			}
+		}
+	}
+}
+

@@ -1,17 +1,12 @@
+
 #include<windows.h>
 #include <fstream>
 #include <GL/glut.h>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include "board.h"
-
 using namespace std;
-
-float position_x[2][16] = {};
-float position_y[2][16] = {};
-float position_z[2][16] = {};
 
 class GLdoublePoint {
 public:
@@ -43,21 +38,33 @@ vector<GLdoublePoint> vertice[7];
 vector<GLdoublePoint> normal[7];
 vector<GLPolygon> polygon[7];
 int nPolArr[6];
-
 int nVer, nPol, nNorm;
 
-int camX = 3;
-int camY = 0;
-int camZ = 0;
-int lookX = 0;
-int lookY = 0;
-int lookZ = 0;
-int upX = 0;
-int upY = 1;
-int upZ = 0;
-int angle;
-int angle2;
-/* -- LOCAL VARIABLES ---------------------------------------------------- */
+float _angle = 0;
+
+GLuint _displayListId_blackArea;
+GLuint _displayListId_whiteArea;
+
+GLfloat ambientLightA[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
+GLfloat diffuseLightA[4] = { 0.8f, 0.8f, 0.8f, 1.0f };
+
+GLfloat ambientLightB[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat diffuseLightB[4] = { 0.8f, 0.8f, 0.8f, 1.0f };
+
+GLfloat specularLightA[4] = { 0.3f, 0.3f, 0.3f, 1.0f };
+GLfloat specularLightB[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+GLfloat lightPositionA[4] = { 1.0, 2.0, 2.0, 0.0 };
+GLfloat lightPositionB[4] = { 1.0, -5.0, -5.0, 0.0 };
+
+GLfloat color1[4] = {0.1f, 0.1f, 0.1f, 1.0f};
+GLfloat color2[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat color_selected_pawn[4] = {0.05f, 0.05f, 0.08f, 1.0};
+GLfloat color_dark[4] = {0.1f, 0.1f, 0.2f, 1.0f};
+GLfloat color_clear[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat color_seleted_board[4] = {0.0f, 0.0f, 1.0f, 0.2f};
+GLfloat color_highlighted[4] = {1.0f, 0.0f, 0.0f, 0.5f};
+GLfloat color_specular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 int getIndex(string name) {
 	if (name == "king.obj") {
@@ -81,6 +88,7 @@ void readfile(string name) {
 	int nor1, nor2, nor3;
 	int index = getIndex(name);
 
+
 	ifstream f_in;
 	f_in.open(name.c_str());
 
@@ -103,15 +111,30 @@ void readfile(string name) {
 		GLPolygon pol(idx1, idx2, idx3, nor1, nor2, nor3);
 		polygon[index].push_back(pol);
 	}
-	
 }
 
-void createChessman(string name) {
+void createChessman(string name, int color) {
+
 	
 	int index = getIndex(name);
-//int index = 5;
 	
 	glPushMatrix();
+	if(color == 0) {
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 2.0f);	
+		
+		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+		glColor3f(0.1f, 0.1f, 0.1f);
+		glColorMaterial(GL_FRONT, GL_SPECULAR);
+		glColor3f(0.1f, 0.1f, 0.1f);
+	}
+	else if(color == 1) {
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 4.0f);
+		
+		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glColorMaterial(GL_FRONT, GL_SPECULAR);
+		glColor3f(1.0f, 1.0f, 1.0f);
+	}
 	for (int i = 0; i < nPolArr[index]; i++) {
 		glBegin(GL_POLYGON);
 		glNormal3d(normal[index][polygon[index][i].normal1 - 1].x, normal[index][polygon[index][i].normal1 - 1].y, normal[index][polygon[index][i].normal1 - 1].z);
@@ -127,143 +150,96 @@ void createChessman(string name) {
 }
 
 void blackChessmen(){
-	glColor3f(0.0, 0.0, 0.0);
-	
 	glPushMatrix();
-
+	
 	glTranslatef(0.75, 0.3, -0.75);
-	createChessman("rook.obj");
+	createChessman("rook.obj", 0);
 	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
 	
 	glRotated(90, 0, 1,0);
-	createChessman("knight.obj");
+	createChessman("knight.obj", 0);
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj");
+	createChessman("bishop.obj", 0);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("king.obj");
+	createChessman("king.obj", 0);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("queen.obj");
+	createChessman("queen.obj", 0);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj");
+	createChessman("bishop.obj", 0);
 	glTranslatef(0.0, 0.0, -1.5);
 	
 	glPushMatrix();
 	glRotated(90, 0, 1,0);
-	createChessman("knight.obj");
+	createChessman("knight.obj", 0);
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("rook.obj");
+	createChessman("rook.obj", 0);
 	glPopMatrix();
 	
 	glPushMatrix();
 	glTranslatef(2.25, 0.3, -0.75);
-	createChessman("pawn.obj");
+	createChessman("pawn.obj", 0);
 	for (int i = 0; i < 7; i++){
 		glTranslatef(0, 0, -1.5);
-		createChessman("pawn.obj");
+		createChessman("pawn.obj", 0);
 	}
 	glPopMatrix();
 }
 
 void whiteChessmen(){
-	glColor3f(0.5, 0.5, 0.3);
-	
 	glPushMatrix();
 	
 	glTranslatef(0.75 + 1.5 * 7, 0.3, -0.75);
-	createChessman("rook.obj");
+	createChessman("rook.obj", 1);
 	glTranslatef(0.0, 0.0, -1.5);
 	
 	glPushMatrix();
 	glRotated(-90, 0, 1,0);
-	createChessman("knight.obj");
+	createChessman("knight.obj", 1);
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj");
+	createChessman("bishop.obj", 1);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("king.obj");
+	createChessman("king.obj", 1);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("queen.obj");
+	createChessman("queen.obj", 1);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj");
+	createChessman("bishop.obj", 1);
 	glTranslatef(0.0, 0.0, -1.5);
 	
 	glPushMatrix();
 	glRotated(-90, 0, 1,0);
-	createChessman("knight.obj");
+	createChessman("knight.obj", 1);
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("rook.obj");
+	createChessman("rook.obj", 1);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.75 + 1.5 * 6, 0.3, -0.75);
-	createChessman("pawn.obj");
+	createChessman("pawn.obj", 1);
 	for (int i = 0; i < 7; i++){
 		glTranslatef(0, 0, -1.5);
-		createChessman("pawn.obj");
+		createChessman("pawn.obj", 1);
 	}
 	glPopMatrix();
 }
 
-void PiecesInit(void) {
-	GLfloat mat_ambient[] = { 0, 0.5, 1, 1.0 };
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat mat_shininess[] = { 50.0 };
-	GLfloat light_position0[] = { 1.0, 2.0, 2.0, 0.0 };
-	GLfloat light_position1[] = { 1.0, 2.0, -25.0, 0.0 };
-	GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
-	GLfloat red[] = { 1.0, 0.3, 0.0 };
-	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat blue[] = { 0.0, 0.0, 1.0, 1.0 };
-	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, red);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, red);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, model_ambient);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-	glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
-	glLightfv(GL_LIGHT1, GL_AMBIENT, red);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, white);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, red);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, model_ambient);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT1);
-
-	blackChessmen();
-	whiteChessmen();
-}
-
-float _angle = 0;
-float i;
-int k = 0;
-
-void handleKeypress(unsigned char key, int x, int y)
-{
-
+void handleKeypress(unsigned char key, int x, int y) {
 	switch (key)
 	{
 	case 27:
 		exit(0);
 	}
-
 }
 
-
-
-void handleResize(int w, int h)
-{
+void handleResize(int w, int h) {
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -271,83 +247,94 @@ void handleResize(int w, int h)
 	gluLookAt(7.0f, 20.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 }
 
-void drawScene()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+void init() {
+	glClearColor (0.8, 0.8, 1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-//	gluLookAt(0.0, 1.0, 0.0, 0.0, 0.0, -2.0, 0.0, 1.0, 0.0);
-	depth -= 0.003f;
 	
-	if (rotateAxisX == true) {
-		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
-	} else {
-		glRotatef(rotateAngle, 0.0f, 1.0f, 0.0f);
-	}
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLightA);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLightA);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLightA);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPositionA);
+	
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLightB);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLightB);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, specularLightB);
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPositionB);
+	
+	glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
+	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+	glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+	
+	glEnable(GL_COLOR_MATERIAL);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void drawFloor() {
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	glVertex3f(0.0f / 2, 0, -20.0f / 2);
+	glVertex3f(0.0f / 2, 0, 0.0f / 2);
+	glVertex3f(20.0f / 2, 0, 0.0f / 2);
+	glVertex3f(20.0f / 2, 0, -20.0f / 2);
+	glEnd();
+}
+
+void drawScene() {
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT  | GL_STENCIL_BUFFER_BIT);
+	glShadeModel (GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
 	glTranslatef(-4*1.5, 0.0, 4*1.5);
-	for (float j = 0.0; j>(-8 * 1.5); j -= 1.5)
-	{
-		k++;
-		for (i = 0.0; i<(4 * 3.0); i += 3.0)
-		{
-			if (k % 2 == 0)
-			{
-				glPushMatrix();
-				glTranslatef(i, 0.0, j);
-				glCallList(_displayListId_blackArea);
-				glPopMatrix();
-			}
-			else
-			{
-				glPushMatrix();
-				glTranslatef(i + 1.5, 0.0, j);
-				glCallList(_displayListId_blackArea);
-				glPopMatrix();
-			}
-		}
-	}
-	for (float j = 0.0; j>(-8 * 1.5); j -= 1.5)
-	{
-		k++;
-		for (i = 0.0; i<(4 * 3.0); i += 3.0)
-		{
-			if (k % 2 != 0)
-			{
-				glPushMatrix();
-				glTranslatef(i, 0.0, j);
-				glCallList(_displayListId_whiteArea);
-				glPopMatrix();
-			}
-			else
-			{
-				glPushMatrix();
-				glTranslatef(i + 1.5, 0.0, j);
-				glCallList(_displayListId_whiteArea);
-				glPopMatrix();
-			}
-		}
-	}
-	glBegin(GL_LINE_STRIP);
-	glColor3f(1, 0, 0);
-	glVertex3f(0, 0, 0);
-	glVertex3f(5, 0, 0);
-	glEnd();
-
-	glBegin(GL_LINE_STRIP);
-	glColor3f(0, 1, 0);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, 5, 0);
-	glEnd();
-
-	glBegin(GL_LINE_STRIP);
-	glColor3f(0, 0, 1);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, 0, 5);
-	glEnd();
-
-	PiecesInit();
+	
+	glPushMatrix();
+//	glTranslatef(0, 3, 0);
+	blackChessmen();
+	whiteChessmen();
+	glPopMatrix();
+	
+	glEnable(GL_STENCIL_TEST); //Enable using the stencil buffer
+	glColorMask(0, 0, 0, 0); //Disable drawing colors to the screen
+	glDisable(GL_DEPTH_TEST); //Disable depth testing
+	glStencilFunc(GL_ALWAYS, 1, 1); //Make the stencil test always pass
+	
+	//Make pixels in the stencil buffer be set to 1 when the stencil test passes
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	
+	drawChessBoard();
+	
+	glColorMask(1, 1, 1, 1); //Enable drawing colors to the screen
+	glEnable(GL_DEPTH_TEST); //Enable depth testing
+	
+	//Make the stencil test pass only when the pixel is 1 in the stencil buffer
+	glStencilFunc(GL_EQUAL, 1, 1);
+	
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Make the stencil buffer not change
+	
+	//buffer is 1
+	glPushMatrix();
+	glScalef(1, -1, 1);
+//	glTranslatef(0, 3, 0);
+	blackChessmen();
+	whiteChessmen();
+	glPopMatrix();
+	
+	glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
+	 
+	//Blend the floor onto the screen
+	
+	
+	drawChessBoard();
+	glDisable(GL_BLEND);
+	
 	glutSwapBuffers();
-	glutPostRedisplay();
 }
 
 void update(int value) {
@@ -389,6 +376,7 @@ void mouseMotion(int x, int y)
 			} else {
 				rotateAngle -= 10.0 * 0.11;
 			}
+			
 			rotateAxisX = false;
 		} else if (abs(y - oldY) > 0 && abs(y - oldY) > abs(x - oldX)) {
 			if ((y - oldY) > 0) {
@@ -403,25 +391,29 @@ void mouseMotion(int x, int y)
 	}
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 	readfile("rook.obj");
 	readfile("bishop.obj");
 	readfile("king.obj");
 	readfile("knight.obj");
 	readfile("pawn.obj");
 	readfile("queen.obj");
+	
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(800, 600);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STENCIL);
+	glutInitWindowSize (800, 600);
+	glutInitWindowPosition (100,100);
 	glutCreateWindow("basic shape");
-	initRendering();
+	init();
+	
 	glutDisplayFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
-	//	glutTimerFunc(25, update, 0);
 	glutMouseFunc(mouseEvent);
 	glutMotionFunc(mouseMotion);
+	
+	
 	glutMainLoop();
+
 	return 0;
 }
