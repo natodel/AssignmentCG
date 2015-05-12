@@ -121,9 +121,9 @@ void createChessman(string name, int color) {
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 2.0f);	
 		
 		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-		glColor3f(0.1f, 0.1f, 0.1f);
+		glColor3f(0.4f, 0.4f, 0.6f);
 		glColorMaterial(GL_FRONT, GL_SPECULAR);
-		glColor3f(0.1f, 0.1f, 0.1f);
+		glColor3f(1.0f, 1.0f, 1.0f);
 	}
 	else if(color == 1) {
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 4.0f);
