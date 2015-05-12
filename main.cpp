@@ -1,4 +1,3 @@
-
 #include<windows.h>
 #include <fstream>
 #include <GL/glut.h>
@@ -6,8 +5,13 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "board.h"
 
 using namespace std;
+
+float position_x[2][16] = {};
+float position_y[2][16] = {};
+float position_z[2][16] = {};
 
 class GLdoublePoint {
 public:
@@ -34,12 +38,6 @@ int oldX, newX, oldY, newY;
 bool rotateAxisX = false;
 float rotateAngle = 0.0;
 float depth;
-
-
-//vector<GLdoublePoint> vertice;
-//vector<GLdoublePoint> normal;
-//vector<GLPolygon> polygon;
-
 
 vector<GLdoublePoint> vertice[7];
 vector<GLdoublePoint> normal[7];
@@ -83,7 +81,6 @@ void readfile(string name) {
 	int nor1, nor2, nor3;
 	int index = getIndex(name);
 
-
 	ifstream f_in;
 	f_in.open(name.c_str());
 
@@ -95,13 +92,11 @@ void readfile(string name) {
 		vertice[index].push_back(point);
 	}
 
-
 	for (int i = 0; i < nNorm; i++) {
 		f_in >> point_x >> point_y >> point_z;
 		GLdoublePoint point(point_x, point_y, point_z);
 		normal[index].push_back(point);
 	}
-
 
 	for (int i = 0; i < nPol; i++) {
 		f_in >> idx1 >> nor1 >> idx2 >> nor2 >> idx3 >> nor3;
@@ -133,8 +128,9 @@ void createChessman(string name) {
 
 void blackChessmen(){
 	glColor3f(0.0, 0.0, 0.0);
-	glPushMatrix();
 	
+	glPushMatrix();
+
 	glTranslatef(0.75, 0.3, -0.75);
 	createChessman("rook.obj");
 	glTranslatef(0.0, 0.0, -1.5);
@@ -249,14 +245,9 @@ void PiecesInit(void) {
 	whiteChessmen();
 }
 
-
-
-
 float _angle = 0;
 float i;
 int k = 0;
-GLuint _displayListId_blackArea; //The OpenGL id of the display list
-GLuint _displayListId_whiteArea; //The OpenGL id of the display list
 
 void handleKeypress(unsigned char key, int x, int y)
 {
@@ -280,378 +271,61 @@ void handleResize(int w, int h)
 	gluLookAt(7.0f, 20.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 }
 
-
-
-void draw_BlackArea()
-{
-
-	// glPushMatrix();
-
-	//glTranslatef(1.5f,0.0f,0.0f);
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glTranslatef(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(1.50f, 0.0f, 0.0f);
-
-	glVertex3f(1.5f, 0.3f, 0.0f);
-
-	glVertex3f(0.0f, 0.3f, 0.0f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(0.0f, 0.0f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, 0.0f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(1.5f, 0.0f, 0.0f);
-
-	glVertex3f(1.5f, 0.0f, -1.5f);
-
-	glVertex3f(1.5f, 0.3f, -1.5f);
-
-	glVertex3f(1.5f, 0.3f, 0.0f);
-
-	glEnd();
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(0.0f, 0.0f, -1.5f);
-
-	glVertex3f(1.50f, 0.0f, -1.5f);
-
-	glVertex3f(1.5f, 0.3f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, -1.5f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(1.50f, 0.0f, 0.0f);
-
-	glVertex3f(1.5f, 0.0f, -1.5f);
-
-	glVertex3f(0.0f, 0.0f, -1.5f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.1f, 0.1f, 0.1f);
-
-	glVertex3f(0.0f, 0.3f, 0.0f);
-
-	glVertex3f(1.50f, 0.3f, 0.0f);
-
-	glVertex3f(1.5f, 0.3f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, -1.5f);
-
-	glEnd();
-
-
-}
-
-void draw_whiteArea()
-
-{
-
-	// glPushMatrix();
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glTranslatef(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(1.50f, 0.0f, 0.0f);
-
-	glVertex3f(1.5f, 0.3f, 0.0f);
-
-	glVertex3f(0.0f, 0.3f, 0.0f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(0.0f, 0.0f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, 0.0f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(1.5f, 0.0f, 0.0f);
-
-	glVertex3f(1.5f, 0.0f, -1.5f);
-
-	glVertex3f(1.5f, 0.3f, -1.5f);
-
-	glVertex3f(1.5f, 0.3f, 0.0f);
-
-	glEnd();
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(0.0f, 0.0f, -1.5f);
-
-	glVertex3f(1.50f, 0.0f, -1.5f);
-
-	glVertex3f(1.5f, 0.3f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, -1.5f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.05f, 0.05f, 0.05f);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glVertex3f(1.50f, 0.0f, 0.0f);
-
-	glVertex3f(1.5f, 0.0f, -1.5f);
-
-	glVertex3f(0.0f, 0.0f, -1.5f);
-
-	glEnd();
-
-
-
-
-
-	glBegin(GL_QUADS);
-
-	glColor3f(1.0f, 1.0f, 1.0f);
-
-	glVertex3f(0.0f, 0.3f, 0.0f);
-
-	glVertex3f(1.50f, 0.3f, 0.0f);
-
-	glVertex3f(1.5f, 0.3f, -1.5f);
-
-	glVertex3f(0.0f, 0.3f, -1.5f);
-
-	glEnd();
-
-	// glPopMatrix();
-
-
-
-}
-
-
-
-void initRendering()
-
-{
-	
-	glEnable(GL_DEPTH_TEST);
-
-	glEnable(GL_COLOR_MATERIAL);
-
-	glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
-
-	//Set up a display list for drawing a cube
-
-	_displayListId_blackArea = glGenLists(1); //Make room for the display list
-
-	glNewList(_displayListId_blackArea, GL_COMPILE); //Begin the display list
-
-	draw_BlackArea(); //Add commands for drawing a black area to the display list
-
-	glEndList(); //End the display list
-
-
-
-	//Set up a display list for drawing a cube
-
-	_displayListId_whiteArea = glGenLists(2); //Make room for the display list
-
-	glNewList(_displayListId_whiteArea, GL_COMPILE); //Begin the display list
-
-	draw_whiteArea(); //Add commands for drawing a black to the display list
-
-	glEndList(); //End the display list
-
-	
-}
-
 void drawScene()
-
 {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glMatrixMode(GL_MODELVIEW);
-
 	glLoadIdentity();
-
 //	gluLookAt(0.0, 1.0, 0.0, 0.0, 0.0, -2.0, 0.0, 1.0, 0.0);
-	
 	depth -= 0.003f;
-	
 	
 	if (rotateAxisX == true) {
 		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
 	} else {
 		glRotatef(rotateAngle, 0.0f, 1.0f, 0.0f);
 	}
-	
 	glTranslatef(-4*1.5, 0.0, 4*1.5);
-
-
-
 	for (float j = 0.0; j>(-8 * 1.5); j -= 1.5)
-
 	{
-
 		k++;
-
 		for (i = 0.0; i<(4 * 3.0); i += 3.0)
-
 		{
-
 			if (k % 2 == 0)
-
 			{
-
 				glPushMatrix();
-
 				glTranslatef(i, 0.0, j);
-
 				glCallList(_displayListId_blackArea);
-
 				glPopMatrix();
-
 			}
-
 			else
-
 			{
-
 				glPushMatrix();
-
 				glTranslatef(i + 1.5, 0.0, j);
-
 				glCallList(_displayListId_blackArea);
-
 				glPopMatrix();
-
 			}
-
 		}
-
 	}
-
 	for (float j = 0.0; j>(-8 * 1.5); j -= 1.5)
-
 	{
-
 		k++;
-
 		for (i = 0.0; i<(4 * 3.0); i += 3.0)
-
 		{
-
 			if (k % 2 != 0)
-
 			{
-
 				glPushMatrix();
-
 				glTranslatef(i, 0.0, j);
-
 				glCallList(_displayListId_whiteArea);
-
 				glPopMatrix();
 			}
-
 			else
 			{
 				glPushMatrix();
-
 				glTranslatef(i + 1.5, 0.0, j);
-
 				glCallList(_displayListId_whiteArea);
-
 				glPopMatrix();
 			}
-
 		}
-
 	}
 	glBegin(GL_LINE_STRIP);
 	glColor3f(1, 0, 0);
@@ -715,7 +389,6 @@ void mouseMotion(int x, int y)
 			} else {
 				rotateAngle -= 10.0 * 0.11;
 			}
-			
 			rotateAxisX = false;
 		} else if (abs(y - oldY) > 0 && abs(y - oldY) > abs(x - oldX)) {
 			if ((y - oldY) > 0) {
@@ -732,37 +405,23 @@ void mouseMotion(int x, int y)
 
 int main(int argc, char** argv)
 {
-	
 	readfile("rook.obj");
 	readfile("bishop.obj");
 	readfile("king.obj");
 	readfile("knight.obj");
 	readfile("pawn.obj");
 	readfile("queen.obj");
-	
-	
 	glutInit(&argc, argv);
-	
-
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-
 	glutInitWindowSize(800, 600);
-
 	glutCreateWindow("basic shape");
-
-	
-
 	initRendering();
-
-//	glutFullScreen();
 	glutDisplayFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	//	glutTimerFunc(25, update, 0);
 	glutMouseFunc(mouseEvent);
 	glutMotionFunc(mouseMotion);
-	
 	glutMainLoop();
-
 	return 0;
 }

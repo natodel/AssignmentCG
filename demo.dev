@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=../../../../Dev-Cpp/MinGW32/lib/libopengl32.a_@@_../../../../Dev-Cpp/MinGW32/lib/libglu32.a_@@_../../../../Dev-Cpp/MinGW32/lib/libglut32.a_@@_
+Linker="../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_"../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000001000000
-UnitCount=1
+UnitCount=3
 
 [VersionInfo]
 Major=1
@@ -61,31 +61,14 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=..\chess\king.obj
-Folder=demo
-Compile=0
-Link=0
+FileName=board.h
+Folder=
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
-
-[Unit4]
-FileName=..\chess\knight.obj
-Folder=demo
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit5]
-FileName=..\chess\pawn.obj
-Folder=demo
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
+CompileCpp=1
 
 [Unit6]
 FileName=..\chess\queen.obj
@@ -101,6 +84,16 @@ FileName=..\chess\rook.obj
 Folder=demo
 Compile=0
 Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=board.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
