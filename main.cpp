@@ -114,8 +114,6 @@ void readfile(string name) {
 }
 
 void createChessman(string name, int color) {
-
-	
 	int index = getIndex(name);
 	
 	glPushMatrix();
@@ -274,16 +272,6 @@ void init() {
 	
 	glEnable(GL_COLOR_MATERIAL);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-}
-
-void drawFloor() {
-	glBegin(GL_QUADS);
-	glNormal3f(0, 1, 0);
-	glVertex3f(0.0f / 2, 0, -20.0f / 2);
-	glVertex3f(0.0f / 2, 0, 0.0f / 2);
-	glVertex3f(20.0f / 2, 0, 0.0f / 2);
-	glVertex3f(20.0f / 2, 0, -20.0f / 2);
-	glEnd();
 }
 
 void drawScene() {
