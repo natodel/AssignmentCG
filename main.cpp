@@ -6,7 +6,21 @@
 #include <iostream>
 #include <vector>
 #include "board.h"
+#include <math.h>
+#include<set>
+
+
 using namespace std;
+
+enum chessType {
+	KING,
+	QUEEN,
+	BISHOP,
+	KNIGHT,
+	ROOK,
+	PAWN
+};
+
 
 class GLdoublePoint {
 public:
@@ -34,7 +48,15 @@ bool rotateAxisX = false;
 float rotateAngle = 0.0;
 float depth;
 
-bool isEmpty[8][8];
+
+//
+bool isEmpty[8][8]; // THIS WILL MARK THE STATE OF EACH PIECE ON CHESSBOARD, IF IT CONTAIN THE CHESSPIECE, WILL BE RECEIVE FALSE VALUE
+bool isSelected; // TRUE IF ONE CHESSPIECE IS SELECTED - FALSE IF NO CHESSPIECE IS SELECTED.
+bool blackPawnFirstMove[8]; // TRUE FOR FIRST MOVEMENT OF THE PAWN
+bool whitePawnFirstMove[8]; //....
+
+/*DECLARE THE ARRAY WHICH CONTAIN THE MOVEABLE POSITION OF EACH CHESSPIECE*/
+set<int> moveablePos;
 
 vector<GLdoublePoint> vertice[7];
 vector<GLdoublePoint> normal[7];
@@ -48,7 +70,7 @@ float _angle = 0;
 GLuint _displayListId_blackArea;
 GLuint _displayListId_whiteArea;
 
-GLfloat ambientLightA[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
+GLfloat ambientLightA[4] = { 0.2f, 0.2f, 0.2f, 1.0f }; 
 GLfloat diffuseLightA[4] = { 0.8f, 0.8f, 0.8f, 1.0f };
 
 GLfloat ambientLightB[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -403,46 +425,30 @@ void update() {
 //	glutTimerFunc(25, update, 0);
 }
 
-int getIndexFromXPosition(GLdouble x) {
-	if (x > 0 && x < 1.5) {
+int getIndexFromPosition(GLdouble x) {
+	
+	float value = fabs(x);
+	
+	if (value > 0 && value < 1.5) {
+		return 0;
+	} else if (value < 3) {
 		return 1;
-	} else if (x < 3) {
+	} else if (value < 4.5) {
 		return 2;
-	} else if (x < 4.5) {
+	} else if (value < 6) {
 		return 3;
-	} else if (x < 6) {
+	} else if (value < 7.5) {
 		return 4;
-	} else if (x < 7.5) {
+	} else if (value < 9) {
 		return 5;
-	} else if (x < 9) {
+	} else if (value < 10.5) {
 		return 6;
-	} else if (x < 10.5) {
+	} else if (value < 12) {
 		return 7;
-	} else if (x < 12) {
-		return 8;
 	}
-	return 0;
+	return 8;
 }
 
-int getIndexFromZPosition(GLdouble x) {
-	if (x < 0 && x > -1.5) {
-		return 1;
-	} else if (x > -3) {
-		return 2;
-	} else if (x > -4.5) {
-		return 3;
-	} else if (x > -6) {
-		return 4;
-	} else if (x > -7.5) {
-		return 5;
-	} else if (x > -9) {
-		return 6;
-	} else if (x > -10.5) {
-		return 7;
-	} else if (x > -12) {
-		return 8;
-	}
-}
 
 void mouseEvent(int button, int state, int x, int y) 
 {
@@ -461,7 +467,15 @@ void mouseEvent(int button, int state, int x, int y)
 				glutPostRedisplay();
 			}
 			
-			cout << "Index = " << getIndexFromZPosition(posZ) << ""  << getIndexFromXPosition(posX) <<endl;
+			cout << "Index = " << getIndexFromPosition(posX) << ""  << getIndexFromPosition(posZ) <<endl;
+			
+			if (isEmpty[getIndexFromPosition(posX)][getIndexFromPosition(posZ)] == true) {
+				cout << "is empty" << endl;
+				
+			} else {
+				cout << "NOT empty" << endl;
+				// NEED TO BE IMPLEMENTED - LIGHT CURRENT PIECE AND THE PIECE WHICH THE CURRENT CHESSPIECE CAN MOVE
+			}
 			
 			break;
 		case GLUT_RIGHT_BUTTON:
@@ -469,6 +483,24 @@ void mouseEvent(int button, int state, int x, int y)
 		case GLUT_MIDDLE_BUTTON:
 			break;
 	}	
+}
+
+void calculatePossibleMove(chessType piece, int currentIndex) {
+	moveablePos.clear();
+	
+	if (piece == KING) {
+		
+	} else if (piece == QUEEN) {
+		
+	} else if (piece == BISHOP) {
+		
+	} else if (piece == KNIGHT) {
+		
+	} else if (piece == ROOK) {
+		
+	} else if (piece == PAWN) {
+		
+	}
 }
 
 void SpecialFuncKey(int key, int x, int y) {
