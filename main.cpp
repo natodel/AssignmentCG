@@ -8,7 +8,7 @@
 #include "board.h"
 #include <math.h>
 #include<set>
-
+#include "chessman.h"
 
 using namespace std;
 
@@ -19,27 +19,6 @@ enum chessType {
 	KNIGHT,
 	ROOK,
 	PAWN
-};
-
-
-class GLdoublePoint {
-public:
-	double x, y, z;
-
-	GLdoublePoint(double a, double b, double c){
-		x = a; y = b; z = c;
-	}
-};
-
-class GLPolygon {
-public:
-	int idxVer1, idxVer2, idxVer3;
-	int normal1, normal2, normal3;
-
-	GLPolygon(int x, int y, int z, int a, int b, int c) {
-		idxVer1 = x; idxVer2 = y; idxVer3 = z;
-		normal1 = a; normal2 = b; normal3 = c;
-	}
 };
 
 int mouseButton;
@@ -58,11 +37,6 @@ bool whitePawnFirstMove[8]; //....
 /*DECLARE THE ARRAY WHICH CONTAIN THE MOVEABLE POSITION OF EACH CHESSPIECE*/
 set<int> moveablePos;
 
-vector<GLdoublePoint> vertice[7];
-vector<GLdoublePoint> normal[7];
-vector<GLPolygon> polygon[7];
-int nPolArr[6];
-int nVer, nPol, nNorm;
 float width = 800, height = 600;
 
 float _angle = 0;
@@ -90,172 +64,6 @@ GLfloat color_clear[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat color_seleted_board[4] = {0.0f, 0.0f, 1.0f, 0.2f};
 GLfloat color_highlighted[4] = {1.0f, 0.0f, 0.0f, 0.5f};
 GLfloat color_specular[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
-int getIndex(string name) {
-	if (name == "king.obj") {
-		return 0;
-	} else if (name == "queen.obj") {
-		return 1;
-	} else if (name == "bishop.obj") {
-		return 2;
-	} else if (name == "knight.obj") {
-		return 3;
-	} else if (name == "rook.obj") {
-		return 4;
-	} else if (name == "pawn.obj") {
-		return 5;
-	}
-}
-
-void readfile(string name) {
-	double point_x, point_y, point_z;
-	int idx1, idx2, idx3;
-	int nor1, nor2, nor3;
-	int index = getIndex(name);
-
-
-	ifstream f_in;
-	f_in.open(name.c_str());
-
-	f_in >> nVer; f_in >> nNorm; f_in >> nPol;
-	nPolArr[index] = nPol;
-	for (int i = 0; i < nVer; i++) {
-		f_in >> point_x >> point_y >> point_z;
-		GLdoublePoint point(point_x, point_y, point_z);
-		vertice[index].push_back(point);
-	}
-
-	for (int i = 0; i < nNorm; i++) {
-		f_in >> point_x >> point_y >> point_z;
-		GLdoublePoint point(point_x, point_y, point_z);
-		normal[index].push_back(point);
-	}
-
-	for (int i = 0; i < nPol; i++) {
-		f_in >> idx1 >> nor1 >> idx2 >> nor2 >> idx3 >> nor3;
-		GLPolygon pol(idx1, idx2, idx3, nor1, nor2, nor3);
-		polygon[index].push_back(pol);
-	}
-}
-
-void createChessman(string name, int color) {
-	int index = getIndex(name);
-	
-	glPushMatrix();
-	if(color == 0) {
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 2.0f);	
-		
-		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-		glColor3f(0.4f, 0.4f, 0.6f);
-		glColorMaterial(GL_FRONT, GL_SPECULAR);
-		glColor3f(1.0f, 1.0f, 1.0f);
-	}
-	else if(color == 1) {
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 4.0f);
-		
-		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-		glColor3f(1.0f, 1.0f, 1.0f);
-		glColorMaterial(GL_FRONT, GL_SPECULAR);
-		glColor3f(1.0f, 1.0f, 1.0f);
-	}
-	for (int i = 0; i < nPolArr[index]; i++) {
-		glBegin(GL_POLYGON);
-		glNormal3d(normal[index][polygon[index][i].normal1 - 1].x, normal[index][polygon[index][i].normal1 - 1].y, normal[index][polygon[index][i].normal1 - 1].z);
-		glVertex3d(vertice[index][polygon[index][i].idxVer1 - 1].x, vertice[index][polygon[index][i].idxVer1 - 1].y, vertice[index][polygon[index][i].idxVer1 - 1].z);
-		glNormal3d(normal[index][polygon[index][i].normal2 - 1].x, normal[index][polygon[index][i].normal2 - 1].y, normal[index][polygon[index][i].normal2 - 1].z);
-		glVertex3d(vertice[index][polygon[index][i].idxVer2 - 1].x, vertice[index][polygon[index][i].idxVer2 - 1].y, vertice[index][polygon[index][i].idxVer2 - 1].z);
-		glNormal3d(normal[index][polygon[index][i].normal3 - 1].x, normal[index][polygon[index][i].normal3 - 1].y, normal[index][polygon[index][i].normal3 - 1].z);
-		glVertex3d(vertice[index][polygon[index][i].idxVer3 - 1].x, vertice[index][polygon[index][i].idxVer3 - 1].y, vertice[index][polygon[index][i].idxVer3 - 1].z);
-		glEnd();
-	}
-	glPopMatrix();
-}
-float blackRookY = 0;
-
-void blackChessmen(){
-	glPushMatrix();
-	
-	glTranslatef(0.75, 0.3, -0.75);
-	glPushMatrix();
-	glTranslatef(0.0f, blackRookY, 0.0f);
-	createChessman("rook.obj", 0);
-	glPopMatrix();
-	glTranslatef(0.0, 0.0, -1.5);
-	glPushMatrix();
-	
-	glRotated(90, 0, 1,0);
-	createChessman("knight.obj", 0);
-	glPopMatrix();
-	
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj", 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("king.obj", 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("queen.obj", 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj", 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	
-	glPushMatrix();
-	glRotated(90, 0, 1,0);
-	createChessman("knight.obj", 0);
-	glPopMatrix();
-	
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("rook.obj", 0);
-	glPopMatrix();
-	
-	glPushMatrix();
-	glTranslatef(2.25, 0.3, -0.75);
-	createChessman("pawn.obj", 0);
-	for (int i = 0; i < 7; i++){
-		glTranslatef(0, 0, -1.5);
-		createChessman("pawn.obj", 0);
-	}
-	glPopMatrix();
-}
-
-void whiteChessmen(){
-	glPushMatrix();
-	
-	glTranslatef(0.75 + 1.5 * 7, 0.3, -0.75);
-	createChessman("rook.obj", 1);
-	glTranslatef(0.0, 0.0, -1.5);
-	
-	glPushMatrix();
-	glRotated(-90, 0, 1,0);
-	createChessman("knight.obj", 1);
-	glPopMatrix();
-	
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj", 1);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("king.obj", 1);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("queen.obj", 1);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("bishop.obj", 1);
-	glTranslatef(0.0, 0.0, -1.5);
-	
-	glPushMatrix();
-	glRotated(-90, 0, 1,0);
-	createChessman("knight.obj", 1);
-	glPopMatrix();
-	
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman("rook.obj", 1);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0.75 + 1.5 * 6, 0.3, -0.75);
-	createChessman("pawn.obj", 1);
-	for (int i = 0; i < 7; i++){
-		glTranslatef(0, 0, -1.5);
-		createChessman("pawn.obj", 1);
-	}
-	glPopMatrix();
-}
 
 void handleKeypress(unsigned char key, int x, int y) {
 	switch (key)
@@ -310,6 +118,7 @@ void updateChessBoard() {
 }
 
 void init() {
+	initReadfile();
 	glClearColor (0.8, 0.8, 1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -518,12 +327,6 @@ void SpecialFuncKey(int key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-	readfile("rook.obj");
-	readfile("bishop.obj");
-	readfile("king.obj");
-	readfile("knight.obj");
-	readfile("pawn.obj");
-	readfile("queen.obj");
 	
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STENCIL);
