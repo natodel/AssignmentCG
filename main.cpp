@@ -39,6 +39,7 @@ vector<GLdoublePoint> normal[7];
 vector<GLPolygon> polygon[7];
 int nPolArr[6];
 int nVer, nPol, nNorm;
+float width = 800, height = 600;
 
 float _angle = 0;
 
@@ -146,12 +147,15 @@ void createChessman(string name, int color) {
 	glPopMatrix();
 
 }
-
+float blackRookY = 0;
 void blackChessmen(){
 	glPushMatrix();
 	
 	glTranslatef(0.75, 0.3, -0.75);
+	glPushMatrix();
+	glTranslatef(0.0f, blackRookY, 0.0f);
 	createChessman("rook.obj", 0);
+	glPopMatrix();
 	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
 	
@@ -237,14 +241,37 @@ void handleKeypress(unsigned char key, int x, int y) {
 	}
 }
 
+
 void handleResize(int w, int h) {
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45.0, (double)w / (double)h, 1.0, 200);
 	gluLookAt(7.0f, 20.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
+//	glutPostRedisplay();
 }
 
+GLdouble posX = 0, posY = 0, posZ = 0;
+
+void GetOGLPos(int x, int y)
+{
+    GLint viewport[4];
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLfloat winX, winY, winZ;
+    
+ 
+    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+    glGetDoublev( GL_PROJECTION_MATRIX, projection );
+    glGetIntegerv( GL_VIEWPORT, viewport );
+ 
+    winX = (float)x;
+    winY = (float)viewport[3] - (float)y;
+    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+ 
+    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+}
 
 void init() {
 	glClearColor (0.8, 0.8, 1.0, 1.0);
@@ -281,6 +308,7 @@ void drawScene() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
 	
 	if (rotateAxisX == true) {
 		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
@@ -330,6 +358,24 @@ void drawScene() {
 	drawChessBoard();
 	glDisable(GL_BLEND);
 	
+	glBegin(GL_LINE_STRIP);
+	glColor3f(1, 0, 0);
+	glVertex3f(0, 1, 0);
+	glVertex3f(5, 1, 0);
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	glColor3f(0, 1, 0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 5, 0);
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	glColor3f(0, 0, 1);
+	glVertex3f(0, 1, 0);
+	glVertex3f(0, 1, 5);
+	glEnd();
+	
 	glutSwapBuffers();
 }
 
@@ -344,10 +390,16 @@ void mouseEvent(int button, int state, int x, int y)
 	mouseButton = button;
 	switch(button) {
 		case GLUT_LEFT_BUTTON:
-			cout << "left btn";
+			
 			if (state == GLUT_DOWN) {
 				oldX = x;
 				oldY = y;
+			}
+			GetOGLPos(oldX, oldY);
+			cout << posX << "  " << posY << "  " << posZ;
+			if((0 < posX) && (posX < 1.5f) && (-1.5f < posZ) && (posZ < 0)){
+				blackRookY = 1.5;
+				glutPostRedisplay();
 			}
 			break;
 		case GLUT_RIGHT_BUTTON:
@@ -383,14 +435,14 @@ void mouseMotion(int x, int y)
 
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
-		case GLUT_KEY_UP:
-			rotateAngle += 20 * 0.11;
-			rotateAxisX = true;
-			break;
-		case GLUT_KEY_DOWN:
-			rotateAngle -= 20 * 0.11;
-			rotateAxisX = true;
-			break;
+//		case GLUT_KEY_UP:
+//			rotateAngle += 20 * 0.11;
+//			rotateAxisX = true;
+//			break;
+//		case GLUT_KEY_DOWN:
+//			rotateAngle -= 20 * 0.11;
+//			rotateAxisX = true;
+//			break;
 		case GLUT_KEY_LEFT:
 			rotateAngle -= 20 * 0.11;
 			rotateAxisX = false;
