@@ -34,6 +34,8 @@ bool rotateAxisX = false;
 float rotateAngle = 0.0;
 float depth;
 
+bool isEmpty[8][8];
+
 vector<GLdoublePoint> vertice[7];
 vector<GLdoublePoint> normal[7];
 vector<GLPolygon> polygon[7];
@@ -145,9 +147,9 @@ void createChessman(string name, int color) {
 		glEnd();
 	}
 	glPopMatrix();
-
 }
 float blackRookY = 0;
+
 void blackChessmen(){
 	glPushMatrix();
 	
@@ -273,6 +275,18 @@ void GetOGLPos(int x, int y)
     gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 }
 
+void updateChessBoard() {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (i == 0 || i == 1 || i == 6 || i == 7) {
+				isEmpty[i][j] = false;
+			} else {
+				isEmpty[i][j] = true;
+			}
+		}
+	}
+}
+
 void init() {
 	glClearColor (0.8, 0.8, 1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
@@ -299,7 +313,11 @@ void init() {
 	
 	glEnable(GL_COLOR_MATERIAL);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	//Need to check
+	updateChessBoard();
 }
+
 
 void drawScene() {
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT  | GL_STENCIL_BUFFER_BIT);
@@ -385,6 +403,47 @@ void update() {
 //	glutTimerFunc(25, update, 0);
 }
 
+int getIndexFromXPosition(GLdouble x) {
+	if (x > 0 && x < 1.5) {
+		return 1;
+	} else if (x < 3) {
+		return 2;
+	} else if (x < 4.5) {
+		return 3;
+	} else if (x < 6) {
+		return 4;
+	} else if (x < 7.5) {
+		return 5;
+	} else if (x < 9) {
+		return 6;
+	} else if (x < 10.5) {
+		return 7;
+	} else if (x < 12) {
+		return 8;
+	}
+	return 0;
+}
+
+int getIndexFromZPosition(GLdouble x) {
+	if (x < 0 && x > -1.5) {
+		return 1;
+	} else if (x > -3) {
+		return 2;
+	} else if (x > -4.5) {
+		return 3;
+	} else if (x > -6) {
+		return 4;
+	} else if (x > -7.5) {
+		return 5;
+	} else if (x > -9) {
+		return 6;
+	} else if (x > -10.5) {
+		return 7;
+	} else if (x > -12) {
+		return 8;
+	}
+}
+
 void mouseEvent(int button, int state, int x, int y) 
 {
 	mouseButton = button;
@@ -396,11 +455,14 @@ void mouseEvent(int button, int state, int x, int y)
 				oldY = y;
 			}
 			GetOGLPos(oldX, oldY);
-			cout << posX << "  " << posY << "  " << posZ;
+
 			if((0 < posX) && (posX < 1.5f) && (-1.5f < posZ) && (posZ < 0)){
 				blackRookY = 1.5;
 				glutPostRedisplay();
 			}
+			
+			cout << "Index = " << getIndexFromZPosition(posZ) << ""  << getIndexFromXPosition(posX) <<endl;
+			
 			break;
 		case GLUT_RIGHT_BUTTON:
 			break;
@@ -409,40 +471,8 @@ void mouseEvent(int button, int state, int x, int y)
 	}	
 }
 
-void mouseMotion(int x, int y)
-{
-	if (mouseButton == GLUT_LEFT_BUTTON) {
-		if (abs(x - oldX) > 0 && abs(x - oldX) > abs(y - oldY)) {
-			if ((x - oldX) > 0) {
-				rotateAngle += 10.0 * 0.11;
-			} else {
-				rotateAngle -= 10.0 * 0.11;
-			}
-			
-			rotateAxisX = false;
-		} else if (abs(y - oldY) > 0 && abs(y - oldY) > abs(x - oldX)) {
-			if ((y - oldY) > 0) {
-				rotateAngle += 10.0 * 0.11;
-			} else {
-				rotateAngle -= 100 * 0.11;
-			}
-			rotateAxisX = true;
-		}
-		oldX = x;
-		oldY = y;
-	}
-}
-
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
-//		case GLUT_KEY_UP:
-//			rotateAngle += 20 * 0.11;
-//			rotateAxisX = true;
-//			break;
-//		case GLUT_KEY_DOWN:
-//			rotateAngle -= 20 * 0.11;
-//			rotateAxisX = true;
-//			break;
 		case GLUT_KEY_LEFT:
 			rotateAngle -= 20 * 0.11;
 			rotateAxisX = false;
@@ -474,7 +504,6 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	glutMouseFunc(mouseEvent);
-	glutMotionFunc(mouseMotion);
 	glutSpecialFunc(SpecialFuncKey);
 	
 	
