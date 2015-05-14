@@ -8,6 +8,26 @@
 
 using namespace std;
 
+Chessman rook1(ROOK, 0, 0, true, false, 0);
+Chessman knight1(KNIGHT, 0, -1.5, true, false, 0);
+Chessman bishop1(BISHOP, 0, -3.0, true, false, 0);
+Chessman king1(KING, 0, -4.5, true, false, 0);
+Chessman queen1(QUEEN, 0, -6.0, true, false, 0);
+Chessman bishop2(BISHOP, 0, -7.5, true, false, 0);
+Chessman knight2(KNIGHT, 0, -9.0, true, false, 0);
+Chessman rook2(ROOK, 0, -10.5, true, false, 0);
+Chessman* pawn1 = new Chessman[8];
+
+Chessman rook3(ROOK, 1.5*7, 0, true, false, 1);
+Chessman knight3(KNIGHT, 1.5*7, -1.5, true, false, 1);
+Chessman bishop3(BISHOP, 1.5*7, -3.0, true, false, 1);
+Chessman king2(KING, 1.5*7, -4.5, true, false, 1);
+Chessman queen2(QUEEN, 1.5*7, -6.0, true, false, 1);
+Chessman bishop4(BISHOP, 1.5*7, -7.5, true, false, 1);
+Chessman knight4(KNIGHT, 1.5*7, -9.0, true, false, 1);
+Chessman rook4(ROOK, 1.5*7, -10.5, true, false, 1);
+Chessman* pawn2 = new Chessman[8];
+
 GLuint _displayListId_blackArea; //The OpenGL id of the display list
 GLuint _displayListId_whiteArea; //The OpenGL id of the display list
 

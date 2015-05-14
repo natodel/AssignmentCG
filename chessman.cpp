@@ -7,13 +7,6 @@
 #include <iostream>
 #include "chessman.h"
 
-#define KING 0
-#define QUEEN 1
-#define BISHOP 2
-#define KNIGHT 3
-#define ROOK 4
-#define PAWN 5
-
 using namespace std;
 
 void createChessman(int name, int color);

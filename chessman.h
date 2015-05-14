@@ -1,5 +1,12 @@
 #ifndef CHESSMAN_H_
 #define CHESSMAN_H_
+
+#define KING 0
+#define QUEEN 1
+#define BISHOP 2
+#define KNIGHT 3
+#define ROOK 4
+#define PAWN 5
 class Chessman {
 	private:
 		int name;
@@ -21,25 +28,25 @@ class Chessman {
 		void move(double x, double z);
 };
 
-Chessman rook1(ROOK, 0, 0, true, false, 0);
-Chessman knight1(KNIGHT, 0, -1.5, true, false, 0);
-Chessman bishop1(BISHOP, 0, -3.0, true, false, 0);
-Chessman king1(KING, 0, -4.5, true, false, 0);
-Chessman queen1(QUEEN, 0, -6.0, true, false, 0);
-Chessman bishop2(BISHOP, 0, -7.5, true, false, 0);
-Chessman knight2(KNIGHT, 0, -9.0, true, false, 0);
-Chessman rook2(ROOK, 0, -10.5, true, false, 0);
-Chessman* pawn1 = new Chessman[8];
+extern Chessman rook1;
+extern Chessman knight1;
+extern Chessman bishop1;
+extern Chessman king1;
+extern Chessman queen1;
+extern Chessman bishop2;
+extern Chessman knight2;
+extern Chessman rook2;
+extern Chessman* pawn1;
 
-Chessman rook3(ROOK, 1.5*7, 0, true, false, 0);
-Chessman knight3(KNIGHT, 1.5*7, -1.5, true, false, 0);
-Chessman bishop3(BISHOP, 1.5*7, -3.0, true, false, 0);
-Chessman king2(KING, 1.5*7, -4.5, true, false, 0);
-Chessman queen2(QUEEN, 1.5*7, -6.0, true, false, 0);
-Chessman bishop4(BISHOP, 1.5*7, -7.5, true, false, 0);
-Chessman knight4(KNIGHT, 1.5*7, -9.0, true, false, 0);
-Chessman rook4(ROOK, 1.5*7, -10.5, true, false, 0);
-Chessman* pawn2 = new Chessman[8];
+extern Chessman rook3;
+extern Chessman knight3;
+extern Chessman bishop3;
+extern Chessman king2;
+extern Chessman queen2;
+extern Chessman bishop4;
+extern Chessman knight4;
+extern Chessman rook4;
+extern Chessman* pawn2;
 
 extern void drawChessmen();
 extern void initReadfile();
