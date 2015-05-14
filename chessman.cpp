@@ -46,65 +46,57 @@ class GLPolygon {
 		}
 };
 
-class Chessman {
-	private:
-		int name;
-		double coorX, coorZ;
-		bool life, selected;
-		int side;
-	public:
-		Chessman() {
-			name = 0; coorX = 0; coorZ = 0; life = true; side = 0; selected = false;
-		}
-		
-		Chessman(int s, double x, double z, bool b, bool c, int a) {
-			name = s; coorX = x; coorZ = z; life = b; side = a; selected = c;
-		}
-		
-		int getName() {
-			return name;
-		}
-		
-		double getCoorZ() {
-			return coorZ;
-		}
-		
-		double getCoorX() {
-			return coorX;
-		}
-		
-		void setCoor(double x, double z, int s, int n) {
-			coorX = x; coorZ = z; side = s; name = n;
-		}
-		
-		void setSelected() {
-			selected = true;
-		}
-		
-		void setUnSelected() {
-			selected = false;
-		}
-		
-		void destroy() {
-			life = false;
-		}
-		
-		void display() {
-			if(selected) {
-				createChessman(name, 2);
-				glTranslatef(0, 3, 0);
-			}
-			else {
-				createChessman(name, side);
-			}
-		}
-		
-		void move(double x, double z) {
-			int xTran = (x - coorX)/1.5;
-			int zTran = (z - coorZ)/1.5;
-			glTranslatef(xTran*1.5, 0, zTran*1.5);
-		}
-};
+Chessman::Chessman() {
+	name = 0; coorX = 0; coorZ = 0; life = true; side = 0; selected = false;
+}
+
+Chessman::Chessman(int s, double x, double z, bool b, bool c, int a) {
+	name = s; coorX = x; coorZ = z; life = b; side = a; selected = c;
+}
+
+int Chessman::getName() {
+	return name;
+}
+
+double Chessman::getCoorZ() {
+	return coorZ;
+}
+
+double Chessman::getCoorX() {
+	return coorX;
+}
+
+void Chessman::setCoor(double x, double z, int s, int n) {
+	coorX = x; coorZ = z; side = s; name = n;
+}
+
+void Chessman::setSelected() {
+	selected = true;
+}
+
+void Chessman::setUnSelected() {
+	selected = false;
+}
+
+void Chessman::destroy() {
+	life = false;
+}
+
+void Chessman::display() {
+	if(selected) {
+		createChessman(name, 2);
+		glTranslatef(0, 3, 0);
+	}
+	else {
+		createChessman(name, side);
+	}
+}
+
+void Chessman::move(double x, double z) {
+	int xTran = (x - coorX)/1.5;
+	int zTran = (z - coorZ)/1.5;
+	glTranslatef(xTran*1.5, 0, zTran*1.5);
+}
 
 string chess[] = {"king.obj", "queen.obj", "bishop.obj", "knight.obj", "rook.obj", "pawn.obj"};
 vector<GLdoublePoint> vertice[6];
@@ -218,54 +210,53 @@ void blackChessmen(){
 	
 	glTranslatef(0.75, 0.3, -0.75);
 	glPushMatrix();
-	Chessman rook1(ROOK, 0, 0, true, false, 0);
+	
 	rook1.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
 	glRotated(90, 0, 1,0);
-	Chessman knight1(KNIGHT, 0, -1.5, true, false, 0);
+	
 	knight1.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman bishop1(BISHOP, 0, -3.0, true, false, 0);
+	
 	bishop1.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman king(KING, 0, -4.5, true, false, 0);
-	king.display();
+	
+	king1.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman queen(QUEEN, 0, -6.0, true, false, 0);
-	queen.display();
+	
+	queen1.display();
 		
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman bishop2(BISHOP, 0, -7.5, true, false, 0);
+	
 	bishop2.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
 	glRotated(90, 0, 1,0);
-	Chessman knight2(KNIGHT, 0, -9.0, true, false, 0);
+	
 	knight2.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman rook2(ROOK, 0, -10.5, true, false, 0);
 	rook2.display();
 	glPopMatrix();
 	
 	glPushMatrix();
 	glTranslatef(2.25, 0.3, -0.75);
-	Chessman* pawn = new Chessman[8];
-	pawn[0].setCoor(1.5, 0, 0, PAWN);
-	pawn[0].display();
+	
+	pawn1[0].setCoor(1.5, 0, 0, PAWN);
+	pawn1[0].display();
 	for (int i = 0; i < 7; i++){
 		glTranslatef(0, 0, -1.5);
-		pawn[i+1].setCoor(1.5, -1.5*i, 0, PAWN);
-		pawn[i+1].display();
+		pawn1[i+1].setCoor(1.5, -1.5*i, 0, PAWN);
+		pawn1[i+1].display();
 	}
 	glPopMatrix();
 }
@@ -274,53 +265,44 @@ void whiteChessmen(){
 	glPushMatrix();
 	
 	glTranslatef(0.75 + 1.5 * 7, 0.3, -0.75);
-	Chessman rook1(ROOK, 0, 0, true, false, 1);
-	rook1.display();
+	rook3.display();
 	glTranslatef(0.0, 0.0, -1.5);
 	
 	glPushMatrix();
 	glRotated(-90, 0, 1,0);
-	Chessman knight1(KNIGHT, 0, -1.5, true, false, 1);
-	knight1.display();
+	knight3.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman bishop1(BISHOP, 0, -3.0, true, false, 1);
-	bishop1.display();
+	bishop3.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman king(KING, 0, -4.5, true, false, 1);
-	king.display();
+	king2.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman queen(QUEEN, 0, -6.0, true, false, 1);
-	queen.display();
+	queen2.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman bishop2(BISHOP, 0, -7.5, true, false, 1);
-	bishop2.display();
+	bishop4.display();
 	
 	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
 	glRotated(-90, 0, 1,0);
-	Chessman knight2(KNIGHT, 0, -9.0, true, false, 1);
-	knight2.display();
+	knight4.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	Chessman rook2(ROOK, 0, -10.5, true, false, 1);
-	rook2.display();
+	rook4.display();
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.75 + 1.5 * 6, 0.3, -0.75);
-	Chessman* pawn = new Chessman[8];
-	pawn[0].setCoor(1.5, 0, 1, PAWN);
-	pawn[0].display();
+	pawn2[0].setCoor(1.5*6, 0, 1, PAWN);
+	pawn2[0].display();
 	for (int i = 0; i < 7; i++){
 		glTranslatef(0, 0, -1.5);
-		pawn[i+1].setCoor(1.5, -1.5*i, 1, PAWN);
-		pawn[i+1].display();
+		pawn2[i+1].setCoor(1.5*6, -1.5*i, 1, PAWN);
+		pawn2[i+1].display();
 	}
 	glPopMatrix();
 }
