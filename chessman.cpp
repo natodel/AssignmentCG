@@ -3,79 +3,180 @@
 #include <fstream>
 #include <GL/glut.h>
 #include <cstdlib>
+#include <vector>
 #include <iostream>
 #include "chessman.h"
 
+#define KING 0
+#define QUEEN 1
+#define BISHOP 2
+#define KNIGHT 3
+#define ROOK 4
+#define PAWN 5
+
 using namespace std;
 
-void initReadfile() {
-	vertice = new GLdoublePoint*[7];
-	normal = new GLdoublePoint*[7];
-	polygon = new GLPolygon*[6];
-}
+void createChessman(int name, int color);
 
-int getIndex(char name[]) {
+class GLdoublePoint {
+	public:
+		double x, y, z;
+		
+		GLdoublePoint() {
+			x = 0; y = 0; z = 0;
+		}
+		GLdoublePoint(double a, double b, double c){
+			x = a; y = b; z = c;
+		}
+};
+
+class GLPolygon {
+	public:
+		int idxVer1, idxVer2, idxVer3;
+		int normal1, normal2, normal3;
+		
+		GLPolygon() {
+			idxVer1 = 0; idxVer2 = 0; idxVer3 = 0;
+			normal1 = 0; normal2 = 0; normal3 = 0;
+		}
+	
+		GLPolygon(int x, int y, int z, int a, int b, int c) {
+			idxVer1 = x; idxVer2 = y; idxVer3 = z;
+			normal1 = a; normal2 = b; normal3 = c;
+		}
+};
+
+class Chessman {
+	private:
+		int name;
+		double coorX, coorZ;
+		bool life, selected;
+		int side;
+	public:
+		chessman() {
+			name = ""; coorX = 0; coorZ = 0; life = true; side = 0; selected = false;
+		}
+		
+		chessman(int s, double x, double z, bool b, bool c, int a) {
+			name = s; coorX = x; coorZ = z; life = b; side = a; selected = c;
+		}
+		
+		string getName() {
+			return name;
+		}
+		
+		double getCoorZ() {
+			return coorZ;
+		}
+		
+		double getCoorX() {
+			return coorX;
+		}
+		
+		void setCoor(double x, double z, int s, int n) {
+			coorX = x; coorZ = z; side = s; name = n;
+		}
+		
+		void setSelected() {
+			selected = true;
+		}
+		
+		void setUnSelected() {
+			selected = false;
+		}
+		
+		void destroy() {
+			life = false;
+		}
+		
+		void display() {
+			if(selected) {
+				createChessman(name, 2);
+				glTranslatef(0, 3, 0);
+			}
+			else {
+				createChessman(name, side);
+			}
+		}
+		
+		void move(double x, double z) {
+			int xTran = (x - coorX)/1.5;
+			int zTran = (z - coorZ)/1.5;
+			glTranslatef(xTran*1.5, 0, zTran*1.5);
+		}
+};
+
+string chess[] = {"king.obj", "queen.obj", "bishop.obj", "knight.obj", "rook.obj", "pawn.obj"};
+vector<GLdoublePoint> vertice[6];
+vector<GLdoublePoint> normal[6];
+vector<GLPolygon> polygon[6];
+int nPolArr[6];
+int nVer, nPol, nNorm;
+
+int getIndex(string name) {
 	string n = name;
 	
-	if (n == "king.obj") {
-		return 0;
-	} else if (n == "queen.obj") {
-		return 1;
-	} else if (n == "bishop.obj") {
-		return 2;
-	} else if (n == "knight.obj") {
-		return 3;
-	} else if (n == "rook.obj") {
-		return 4;
-	} else if (n == "pawn.obj") {
-		return 5;
+	if (name == chess[KING]) {
+		return KING;
+	} else if (name == chess[QUEEN]) {
+		return QUEEN;
+	} else if (name == chess[BISHOP]) {
+		return BISHOP;
+	} else if (name == chess[KNIGHT]) {
+		return KNIGHT;
+	} else if (name == chess[ROOK]) {
+		return ROOK;
+	} else if (name == chess[PAWN]) {
+		return PAWN;
 	}
 }
 
-
-void readfile(char name[]) {
+void readfile(string name) {
 	double point_x, point_y, point_z;
 	int idx1, idx2, idx3;
 	int nor1, nor2, nor3;
-	
 	int index = getIndex(name);
-	
-	string n = name;
+
 
 	ifstream f_in;
-	f_in.open(n.c_str());
+	f_in.open(name.c_str());
 
 	f_in >> nVer; f_in >> nNorm; f_in >> nPol;
 	nPolArr[index] = nPol;
-	vertice[index] = new GLdoublePoint[nVer];
-	normal[index] = new GLdoublePoint[nNorm];
-	polygon[index] = new GLPolygon[nPol];
 	for (int i = 0; i < nVer; i++) {
 		f_in >> point_x >> point_y >> point_z;
 		GLdoublePoint point(point_x, point_y, point_z);
-		vertice[index][i] = point;
+		vertice[index].push_back(point);
 	}
 
 	for (int i = 0; i < nNorm; i++) {
 		f_in >> point_x >> point_y >> point_z;
 		GLdoublePoint point(point_x, point_y, point_z);
-		normal[index][i] = point;
+		normal[index].push_back(point);
 	}
 
 	for (int i = 0; i < nPol; i++) {
 		f_in >> idx1 >> nor1 >> idx2 >> nor2 >> idx3 >> nor3;
 		GLPolygon pol(idx1, idx2, idx3, nor1, nor2, nor3);
-		polygon[index][i] = pol;
+		polygon[index].push_back(pol);
 	}
 }
 
+void initReadfile() {
+	readfile(chess[ROOK]);
+	readfile(chess[KING]);
+	readfile(chess[QUEEN]);
+	readfile(chess[BISHOP]);
+	readfile(chess[KNIGHT]);
+	readfile(chess[PAWN]);
+}
 
-void createChessman(char name[], int color) {
-	int index = getIndex(name);
+void createChessman(int name, int color) {
+	int index = name;
 	
 	glPushMatrix();
 	if(color == 0) {
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 2.0f);	
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 4.0f);	
 		
 		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 		glColor3f(0.4f, 0.4f, 0.6f);
@@ -87,6 +188,14 @@ void createChessman(char name[], int color) {
 		
 		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 		glColor3f(1.0f, 1.0f, 1.0f);
+		glColorMaterial(GL_FRONT, GL_SPECULAR);
+		glColor3f(1.0f, 1.0f, 1.0f);
+	}
+	else if(color == 2) {
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 4.0f);
+		
+		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+		glColor3f(0.6f, 0.6f, 0.8f);
 		glColorMaterial(GL_FRONT, GL_SPECULAR);
 		glColor3f(1.0f, 1.0f, 1.0f);
 	}
@@ -109,40 +218,54 @@ void blackChessmen(){
 	
 	glTranslatef(0.75, 0.3, -0.75);
 	glPushMatrix();
-	createChessman(rook, 0);
+	Chessman rook1 = new Chessman(ROOK, 0, 0, true, false, 0);
+	rook1.display();
 	glPopMatrix();
+	
 	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
-	
 	glRotated(90, 0, 1,0);
-	createChessman(knight, 0);
+	Chessman knight1 = new Chessman(KNIGHT, 0, -1.5, true, false, 0);
+	knight1.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(bishop, 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(king, 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(queen, 0);
-	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(bishop, 0);
-	glTranslatef(0.0, 0.0, -1.5);
+	Chessman bishop1 = new Chessman(BISHOP, 0, -3.0, true, false, 0);
+	bishop1.display();
 	
+	glTranslatef(0.0, 0.0, -1.5);
+	Chessman king = new Chessman(KING, 0, -4.5, true, false, 0);
+	king.display();
+	
+	glTranslatef(0.0, 0.0, -1.5);
+	Chessman queen = new Chessman(QUEEN, 0, -6.0, true, false, 0);
+	queen.display();
+		
+	glTranslatef(0.0, 0.0, -1.5);
+	Chessman bishop2 = new Chessman(BISHOP, 0, -7.5, true, false, 0);
+	bishop2.display();
+	
+	glTranslatef(0.0, 0.0, -1.5);
 	glPushMatrix();
 	glRotated(90, 0, 1,0);
-	createChessman(knight, 0);
+	Chessman knight2 = new Chessman(KNIGHT, 0, -9.0, true, false, 0);
+	knight2.display();
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(rook, 0);
+	Chessman rook2 = new Chessman(ROOK, 0, -10.5, true, false, 0);
+	rook2.display();
 	glPopMatrix();
 	
 	glPushMatrix();
 	glTranslatef(2.25, 0.3, -0.75);
-	createChessman(pawn, 0);
+	Chessman pawn[] = new Chessman[8];
+	pawn[0].setCoor(1.5, 0, 0, PAWN);
+	pawn[0].display();
 	for (int i = 0; i < 7; i++){
 		glTranslatef(0, 0, -1.5);
-		createChessman(pawn, 0);
+		pawn[i+1].setCoor(1.5, -1.5*i, 0, PAWN);
+		pawn[i+1].display();
 	}
 	glPopMatrix();
 }
@@ -151,40 +274,45 @@ void whiteChessmen(){
 	glPushMatrix();
 	
 	glTranslatef(0.75 + 1.5 * 7, 0.3, -0.75);
-	createChessman(rook, 1);
+	createChessman(chess[ROOK], 1);
 	glTranslatef(0.0, 0.0, -1.5);
 	
 	glPushMatrix();
 	glRotated(-90, 0, 1,0);
-	createChessman(knight, 1);
+	createChessman(chess[KNIGHT], 1);
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(bishop, 1);
+	createChessman(chess[BISHOP], 1);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(king, 1);
+	createChessman(chess[KING], 1);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(queen, 1);
+	createChessman(chess[QUEEN], 1);
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(bishop, 1);
+	createChessman(chess[BISHOP], 1);
 	glTranslatef(0.0, 0.0, -1.5);
 	
 	glPushMatrix();
 	glRotated(-90, 0, 1,0);
-	createChessman(knight, 1);
+	createChessman(chess[KNIGHT], 1);
 	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -1.5);
-	createChessman(rook, 1);
+	createChessman(chess[ROOK], 1);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.75 + 1.5 * 6, 0.3, -0.75);
-	createChessman(pawn, 1);
+	createChessman(chess[PAWN], 1);
 	for (int i = 0; i < 7; i++){
 		glTranslatef(0, 0, -1.5);
-		createChessman(pawn, 1);
+		createChessman(chess[PAWN], 1);
 	}
 	glPopMatrix();
+}
+
+void drawChessmen() {
+	blackChessmen();
+	whiteChessmen();
 }
 
