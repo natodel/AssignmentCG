@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o board.o chessman.o ../../Desktop/chess/particle.o
-LINKOBJ  = main.o board.o chessman.o ../../Desktop/chess/particle.o
+OBJ      = main.o board.o chessman.o particle.o
+LINKOBJ  = main.o board.o chessman.o particle.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a" "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a" "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a" 
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
@@ -34,5 +34,5 @@ board.o: board.cpp
 chessman.o: chessman.cpp
 	$(CPP) -c chessman.cpp -o chessman.o $(CXXFLAGS)
 
-../../Desktop/chess/particle.o: ../../Desktop/chess/particle.cpp
-	$(CPP) -c ../../Desktop/chess/particle.cpp -o ../../Desktop/chess/particle.o $(CXXFLAGS)
+particle.o: particle.cpp
+	$(CPP) -c particle.cpp -o particle.o $(CXXFLAGS)

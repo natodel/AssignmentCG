@@ -16,9 +16,10 @@ GLuint _displayListId_whiteArea; //The OpenGL id of the display list
 
 int mouseButton;
 int oldX, newX, oldY, newY;
-bool rotateAxisX = false;
-float rotateAngle = 0.0;
 float depth;
+
+GLfloat eyeX = 7.0f, eyeY = 25.0f, eyeZ = -7.0f;
+GLfloat fixEye = 3.0f;
 
 bool choose = false;
 int chooseID;
@@ -49,6 +50,24 @@ void handleKeypress(unsigned char key, int x, int y) {
 	{
 		case 27:
 			exit(0);
+		case '1':
+			eyeX = 9.0f;
+			eyeY = 15.0f;
+			eyeZ = 0.00f;
+			glutPostRedisplay();
+			break;
+		case '2':
+			eyeX = -9.0f;
+			eyeY = 15.0f;
+			eyeZ = 0.0f;
+			glutPostRedisplay();
+			break;
+		case '3':
+			eyeX = 7.0f;
+			eyeY = 25.0f;
+			eyeZ = -7.0f;
+			glutPostRedisplay();
+			break;
 	}
 }
 
@@ -57,7 +76,6 @@ void handleResize(int w, int h) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45.0, (double)w / (double)h, 1.0, 200);
-	gluLookAt(7.0f, 30.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 }
 
 GLdouble posX = 0, posY = 0, posZ = 0;
@@ -155,12 +173,8 @@ void drawScene() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	gluLookAt(eyeX, eyeY, eyeZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 	
-	if (rotateAxisX == true) {
-		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
-	} else {
-		glRotatef(rotateAngle, 0.0f, 1.0f, 0.0f);
-	}
 	glTranslatef(-4*1.5, 0.0, 4*1.5);
 	glPushMatrix();
 	drawChessmen();
@@ -299,13 +313,19 @@ void mouseEvent(int button, int state, int x, int y)
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
 		case GLUT_KEY_LEFT:
-			rotateAngle -= 20 * 0.11;
-			rotateAxisX = false;
+			eyeZ -= fixEye;
 			glutPostRedisplay();
 			break;
 		case GLUT_KEY_RIGHT:
-			rotateAngle += 20 * 0.11;
-			rotateAxisX = false;
+			eyeZ += fixEye;
+			glutPostRedisplay();
+			break;
+		case GLUT_KEY_UP:
+			eyeY -= fixEye;
+			glutPostRedisplay();
+			break;
+		case GLUT_KEY_DOWN:
+			eyeY += fixEye;
 			glutPostRedisplay();
 			break;
 	}
@@ -314,11 +334,11 @@ void SpecialFuncKey(int key, int x, int y) {
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STENCIL);
-	glutInitWindowSize (800, 600);
-	glutInitWindowPosition (100,100);
+	//glutInitWindowSize (800, 600);
+	//glutInitWindowPosition (100,100);
 	glutCreateWindow("Chess");	
 	init();
-	//glutFullScreen();
+	glutFullScreen();
 	glutDisplayFunc(drawScene);
 	glutIdleFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);

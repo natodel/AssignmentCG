@@ -101,7 +101,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=..\..\Desktop\chess\particle.cpp
+FileName=particle.cpp
 CompileCpp=1
 Folder=chess
 Compile=1
@@ -111,7 +111,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=..\..\Desktop\chess\particle.h
+FileName=particle.h
 CompileCpp=1
 Folder=chess
 Compile=1
