@@ -5,6 +5,7 @@
 #include <math.h>
 #include "board.h"
 #include "chessman.h"
+#include "particle.h"
 
 using namespace std;
 
@@ -117,6 +118,7 @@ void initChessMan()
 }
 
 void init() {
+	initilization();
 	initReadfile();
 	initChessMan();
 	glClearColor (0.8, 0.8, 1.0, 1.0);
@@ -193,26 +195,8 @@ void drawScene() {
 	glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
 	//Blend the floor onto the screen
 	drawChessBoard();
-	glDisable(GL_BLEND);
-	/*
-	glBegin(GL_LINE_STRIP);
-	glColor3f(1, 0, 0);
-	glVertex3f(0, 1, 0);
-	glVertex3f(5, 1, 0);
-	glEnd();
-
-	glBegin(GL_LINE_STRIP);
-	glColor3f(0, 1, 0);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, 5, 0);
-	glEnd();
-
-	glBegin(GL_LINE_STRIP);
-	glColor3f(0, 0, 1);
-	glVertex3f(0, 1, 0);
-	glVertex3f(0, 1, 5);
-	glEnd();
-	*/
+	displayParticle();
+	
 	glutSwapBuffers();
 }
 
@@ -336,6 +320,7 @@ int main(int argc, char** argv) {
 	init();
 	//glutFullScreen();
 	glutDisplayFunc(drawScene);
+	glutIdleFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	glutMouseFunc(mouseEvent);
