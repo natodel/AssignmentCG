@@ -315,12 +315,12 @@ void mouseEvent(int button, int state, int x, int y)
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
 		case GLUT_KEY_LEFT:
-			rotateAngle -= 20 * 0.11;
+			rotateAngle -= 50 * 0.11;
 			rotateAxisX = false;
 			glutPostRedisplay();
 			break;
 		case GLUT_KEY_RIGHT:
-			rotateAngle += 20 * 0.11;
+			rotateAngle += 50 * 0.11;
 			rotateAxisX = false;
 			glutPostRedisplay();
 			break;
@@ -334,7 +334,7 @@ int main(int argc, char** argv) {
 	glutInitWindowPosition (100,100);
 	glutCreateWindow("Chess");	
 	init();
-	//glutFullScreen();
+	glutFullScreen();
 	glutDisplayFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
