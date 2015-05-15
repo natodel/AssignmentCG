@@ -5,7 +5,6 @@
 #include <math.h>
 #include "board.h"
 #include "chessman.h"
-#include "particle.h"
 
 using namespace std;
 
@@ -118,7 +117,6 @@ void initChessMan()
 }
 
 void init() {
-	initilization();
 	initReadfile();
 	initChessMan();
 	glClearColor (0.8, 0.8, 1.0, 1.0);
@@ -156,16 +154,13 @@ void drawScene() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	
 	if (rotateAxisX == true) {
 		glRotatef(rotateAngle, 1.0f, 0.0f, 0.0f);
 	} else {
 		glRotatef(rotateAngle, 0.0f, 1.0f, 0.0f);
 	}
-	cout<<"fuck"<<endl;
-	glPushMatrix();
-//	glTranslatef(0, 3, 0);
 	glTranslatef(-4*1.5, 0.0, 4*1.5);
+	glPushMatrix();
 	drawChessmen();
 	glPopMatrix();
 	
@@ -177,38 +172,47 @@ void drawScene() {
 	//Make pixels in the stencil buffer be set to 1 when the stencil test passes
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
-	glPushMatrix();
-	glTranslatef(-4*1.5, 0.0, 4*1.5);
-	drawChessBoard();
-	glPopMatrix();
+	glBegin(GL_QUADS);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, -12.0);
+	glVertex3f(12.0, 0.0, -12.0);
+	glVertex3f(12.0, 0.0, 0.0);
+	glEnd();
 	
 	glColorMask(1, 1, 1, 1); //Enable drawing colors to the screen
 	glEnable(GL_DEPTH_TEST); //Enable depth testing
-	
 	//Make the stencil test pass only when the pixel is 1 in the stencil buffer
 	glStencilFunc(GL_EQUAL, 1, 1);
-	
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Make the stencil buffer not change
-	
 	//buffer is 1
 	glPushMatrix();
 	glScalef(1, -1, 1);
 //	glTranslatef(0, 3, 0);
-	glTranslatef(-4*1.5, 0.0, 4*1.5);
 	drawChessmen();
 	glPopMatrix();
-	
 	glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
-	 
 	//Blend the floor onto the screen
-	
-	displayParticle();
-	glPushMatrix();
-	glTranslatef(-4*1.5, 0.0, 4*1.5);
 	drawChessBoard();
-	
-	glPopMatrix();
-	
+	glDisable(GL_BLEND);
+	/*
+	glBegin(GL_LINE_STRIP);
+	glColor3f(1, 0, 0);
+	glVertex3f(0, 1, 0);
+	glVertex3f(5, 1, 0);
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	glColor3f(0, 1, 0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 5, 0);
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	glColor3f(0, 0, 1);
+	glVertex3f(0, 1, 0);
+	glVertex3f(0, 1, 5);
+	glEnd();
+	*/
 	glutSwapBuffers();
 }
 
@@ -311,12 +315,12 @@ void mouseEvent(int button, int state, int x, int y)
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
 		case GLUT_KEY_LEFT:
-			rotateAngle -= 50 * 0.11;
+			rotateAngle -= 20 * 0.11;
 			rotateAxisX = false;
 			glutPostRedisplay();
 			break;
 		case GLUT_KEY_RIGHT:
-			rotateAngle += 50 * 0.11;
+			rotateAngle += 20 * 0.11;
 			rotateAxisX = false;
 			glutPostRedisplay();
 			break;
@@ -330,9 +334,8 @@ int main(int argc, char** argv) {
 	glutInitWindowPosition (100,100);
 	glutCreateWindow("Chess");	
 	init();
-	glutFullScreen();
+	//glutFullScreen();
 	glutDisplayFunc(drawScene);
-	glutIdleFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	glutMouseFunc(mouseEvent);
