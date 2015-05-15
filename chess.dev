@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker="../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_"../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_
+Linker=../../../../Dev-Cpp/MinGW32/lib/libopengl32.a_@@_../../../../Dev-Cpp/MinGW32/lib/libglu32.a_@@_../../../../Dev-Cpp/MinGW32/lib/libglut32.a_@@_../../../../Dev-Cpp/MinGW32/lib/libwinmm.a_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=7
+UnitCount=5
 
 [VersionInfo]
 Major=1
@@ -92,16 +92,6 @@ BuildCmd=
 
 [Unit5]
 FileName=chessman.h
-CompileCpp=1
-Folder=chess
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit6]
-FileName=particle.cpp
 CompileCpp=1
 Folder=chess
 Compile=1

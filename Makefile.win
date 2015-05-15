@@ -4,11 +4,11 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o board.o chessman.o particle.o
-LINKOBJ  = main.o board.o chessman.o particle.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a" "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a" "../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a" 
-INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
-CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
+OBJ      = main.o board.o chessman.o
+LINKOBJ  = main.o board.o chessman.o
+LIBS     = -L"C:/Dev-Cpp/MinGW32/lib" -static-libstdc++ -static-libgcc ../../../../Dev-Cpp/MinGW32/lib/libopengl32.a ../../../../Dev-Cpp/MinGW32/lib/libglu32.a ../../../../Dev-Cpp/MinGW32/lib/libglut32.a ../../../../Dev-Cpp/MinGW32/lib/libwinmm.a 
+INCS     = -I"C:/Dev-Cpp/MinGW32/include"
+CXXINCS  = -I"C:/Dev-Cpp/MinGW32/include"
 BIN      = chess.exe
 CXXFLAGS = $(CXXINCS) 
 CFLAGS   = $(INCS) 
@@ -33,6 +33,3 @@ board.o: board.cpp
 
 chessman.o: chessman.cpp
 	$(CPP) -c chessman.cpp -o chessman.o $(CXXFLAGS)
-
-particle.o: particle.cpp
-	$(CPP) -c particle.cpp -o particle.o $(CXXFLAGS)

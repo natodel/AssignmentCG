@@ -3,9 +3,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <math.h>
+#include <MMSystem.h>
 #include "board.h"
 #include "chessman.h"
-#include "particle.h"
+
 
 using namespace std;
 
@@ -18,7 +19,7 @@ int mouseButton;
 int oldX, newX, oldY, newY;
 float depth;
 
-GLfloat eyeX = 7.0f, eyeY = 25.0f, eyeZ = -7.0f;
+GLfloat eyeX = 9.0f, eyeY = 20.0f, eyeZ = 0.0f;
 GLfloat fixEye = 3.0f;
 
 bool choose = false;
@@ -50,19 +51,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 	{
 		case 27:
 			exit(0);
-		case '1':
-			eyeX = 9.0f;
-			eyeY = 15.0f;
-			eyeZ = 0.00f;
-			glutPostRedisplay();
-			break;
-		case '2':
-			eyeX = -9.0f;
-			eyeY = 15.0f;
-			eyeZ = 0.0f;
-			glutPostRedisplay();
-			break;
-		case '3':
+		case 'v':
 			eyeX = 7.0f;
 			eyeY = 25.0f;
 			eyeZ = -7.0f;
@@ -136,7 +125,7 @@ void initChessMan()
 }
 
 void init() {
-	initilization();
+
 	initReadfile();
 	initChessMan();
 	glClearColor (0.8, 0.8, 1.0, 1.0);
@@ -203,13 +192,12 @@ void drawScene() {
 	//buffer is 1
 	glPushMatrix();
 	glScalef(1, -1, 1);
-//	glTranslatef(0, 3, 0);
 	drawChessmen();
 	glPopMatrix();
 	glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
 	//Blend the floor onto the screen
 	drawChessBoard();
-	displayParticle();
+
 	
 	glutSwapBuffers();
 }
@@ -251,6 +239,7 @@ void mouseEvent(int button, int state, int x, int y)
 				for(int i=0; i< 32; i++)
 					if(chessMan[i].currIndex == index)
 					{
+						PlaySound(TEXT("select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						if(chessMan[i].side != player) return;
 						chessMan[i].move_up();
 						choose = true;
@@ -265,6 +254,7 @@ void mouseEvent(int button, int state, int x, int y)
 				for(i=0; i<32; i++)
 					if(chessMan[i].currIndex == index)
 					{
+						PlaySound(TEXT("select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						existChessMan = true;
 						break;
 					}
@@ -281,6 +271,7 @@ void mouseEvent(int button, int state, int x, int y)
 					
 					if(chessMan[i].side == 0)
 					{
+						PlaySound(TEXT("hit.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						BdeadX += increaseX;
 						if(BdeadX > 10.5){
 							BdeadX = 0;
@@ -290,6 +281,7 @@ void mouseEvent(int button, int state, int x, int y)
 					}
 					if(chessMan[i].side == 1)
 					{
+						PlaySound(TEXT("hit.wav"), NULL, SND_FILENAME | SND_ASYNC);
 						WdeadX += increaseX;
 						if(WdeadX > 10.5){
 							WdeadX = 0;
@@ -304,6 +296,21 @@ void mouseEvent(int button, int state, int x, int y)
 				chessMan[chooseID].move(posX, posZ);
 				chessMan[chooseID].move_down();
 				player = abs(player-1);
+				switch(player)
+				{
+					case 1:
+						eyeX = 9.0f;
+						eyeY = 20.0f;
+						eyeZ = 0.00f;
+						glutPostRedisplay();
+						break;
+					case 0:
+						eyeX = -9.0f;
+						eyeY = 20.0f;
+						eyeZ = 0.0f;
+						glutPostRedisplay();
+						break;
+				}
 			}
 			glutPostRedisplay();
 		}
@@ -313,11 +320,11 @@ void mouseEvent(int button, int state, int x, int y)
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
 		case GLUT_KEY_LEFT:
-			eyeZ -= fixEye;
+			eyeX -= fixEye;
 			glutPostRedisplay();
 			break;
 		case GLUT_KEY_RIGHT:
-			eyeZ += fixEye;
+			eyeX += fixEye;
 			glutPostRedisplay();
 			break;
 		case GLUT_KEY_UP:
@@ -334,13 +341,10 @@ void SpecialFuncKey(int key, int x, int y) {
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STENCIL);
-	//glutInitWindowSize (800, 600);
-	//glutInitWindowPosition (100,100);
-	glutCreateWindow("Chess");	
+	glutCreateWindow("Chess");
 	init();
 	glutFullScreen();
 	glutDisplayFunc(drawScene);
-	glutIdleFunc(drawScene);
 	glutKeyboardFunc(handleKeypress);
 	glutReshapeFunc(handleResize);
 	glutMouseFunc(mouseEvent);
