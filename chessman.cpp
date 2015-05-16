@@ -67,6 +67,12 @@ void Chessman::display(int color) {
 	if (!life) return;
 	glPushMatrix();
 	glTranslatef(0,coorY,0);
+	if(name == KNIGHT && side ==0) {
+		glRotated(90, 0, 1, 0);
+	}
+	else if(name == KNIGHT && side == 1) {
+		glRotated(-90, 0, 1, 0);
+	}
 	
 	if(color == 0) {
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 4.0f);	
@@ -184,11 +190,12 @@ void drawChessmen() {
 	int color;
 	for(int i=1; i<32; i++)
 	{
-			if(i<16) color = 0;
-			else color = 1;
-			glTranslated(chessMan[i].coorX-chessMan[i-1].coorX, 0, chessMan[i].coorZ-chessMan[i-1].coorZ);
-			if(chessMan[i].life)
-				chessMan[i].display(color);
+	
+		if(i<16) color = 0;
+		else color = 1;
+		glTranslated(chessMan[i].coorX-chessMan[i-1].coorX, 0, chessMan[i].coorZ-chessMan[i-1].coorZ);
+		if(chessMan[i].life)
+			chessMan[i].display(color);
 	}
 	glPopMatrix();
 }

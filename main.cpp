@@ -30,7 +30,7 @@ float increaseX = 1.5, increaseZ = 1.5;
 float WdeadX = -1.5, WdeadZ = 3;
 float BdeadX = -1.5, BdeadZ = -13.5;
 
-float width = 800, height = 600;
+float width, height;
 
 float _angle = 0;
 
@@ -60,10 +60,12 @@ void handleKeypress(unsigned char key, int x, int y) {
 	}
 }
 
+
 void handleResize(int w, int h) {
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	width = w; height = h;
 	gluPerspective(45.0, (double)w / (double)h, 1.0, 200);
 }
 
@@ -155,14 +157,56 @@ void init() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+void drawBackground() 
+{	
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, width, 0, height, 0, 1);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	//No depth buffer writes for background.
+	glDepthMask(GL_FALSE);
+	glEnable(GL_TEXTURE_2D);
+	GLuint background;
+	background = LoadTexture("space.bmp", 2880, 1800);
+	
+	glBegin( GL_QUADS );
+	glBindTexture( GL_TEXTURE_2D, background);
+	//glColor3f(1.0f, 0.0f, 0.0f);
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex2f( -10.0f, 0.0f );
+	glTexCoord2f( 0.0f, 1.0f );
+	glVertex2f( -10.0f, height );
+	glTexCoord2f( 1.0f, 1.0f );
+	glVertex2f( width, height );
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex2f( width, 0.0f );
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glPopMatrix();
+}
+
 void drawScene() {
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT  | GL_STENCIL_BUFFER_BIT);
+	drawBackground();
 	glShadeModel (GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
 	gluLookAt(eyeX, eyeY, eyeZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	
 	
 	glTranslatef(-4*1.5, 0.0, 4*1.5);
 	glPushMatrix();
@@ -197,7 +241,6 @@ void drawScene() {
 	glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
 	//Blend the floor onto the screen
 	drawChessBoard();
-
 	
 	glutSwapBuffers();
 }

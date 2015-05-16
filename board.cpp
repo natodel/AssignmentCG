@@ -168,7 +168,7 @@ void draw_WhiteArea() {
 
 	glEnable(GL_TEXTURE_2D);
 	GLuint wTexture;
-	wTexture = LoadTexture("fire.bmp", 256, 256);
+	wTexture = LoadTexture("white.bmp", 900, 900);
 
 	glBegin(GL_QUADS);
 	glBindTexture(GL_TEXTURE_2D, wTexture);
