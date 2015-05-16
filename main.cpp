@@ -19,7 +19,7 @@ int mouseButton;
 int oldX, newX, oldY, newY;
 float depth;
 
-GLfloat eyeX = 9.0f, eyeY = 20.0f, eyeZ = 0.0f;
+GLfloat eyeX = 12.0f, eyeY = 17.0f, eyeZ = 0.0f;
 GLfloat fixEye = 3.0f;
 
 bool choose = false;
@@ -333,6 +333,8 @@ void mouseEvent(int button, int state, int x, int y)
 						chessMan[i].destroy(WdeadX, WdeadZ);
 					}
 					glutPostRedisplay();
+				} else {
+					PlaySound(TEXT("select.wav"), NULL, SND_FILENAME | SND_ASYNC);
 				}
 				choose = false;
 				chessMan[chooseID].currIndex = index;
@@ -342,14 +344,14 @@ void mouseEvent(int button, int state, int x, int y)
 				switch(player)
 				{
 					case 1:
-						eyeX = 9.0f;
-						eyeY = 20.0f;
+						eyeX = 12.0f;
+						eyeY = 17.0f;
 						eyeZ = 0.00f;
 						glutPostRedisplay();
 						break;
 					case 0:
-						eyeX = -9.0f;
-						eyeY = 20.0f;
+						eyeX = -12.0f;
+						eyeY = 17.0f;
 						eyeZ = 0.0f;
 						glutPostRedisplay();
 						break;
@@ -363,20 +365,45 @@ void mouseEvent(int button, int state, int x, int y)
 void SpecialFuncKey(int key, int x, int y) {
 	switch (key) {
 		case GLUT_KEY_LEFT:
-			eyeX -= fixEye;
-			glutPostRedisplay();
+			eyeZ -= fixEye;
+			if (eyeZ >= -12) {
+				glutPostRedisplay();
+			} else {
+				eyeZ = -12;
+			}
+			cout << eyeX << " " << eyeY << " " << eyeZ << endl;
+			
 			break;
 		case GLUT_KEY_RIGHT:
-			eyeX += fixEye;
-			glutPostRedisplay();
+			eyeZ += fixEye;
+			if (eyeZ <= 9) {
+				glutPostRedisplay();
+			} else {
+				eyeZ = 9;
+			}
+			cout << eyeX << " " << eyeY << " " << eyeZ << endl;
+			
 			break;
 		case GLUT_KEY_UP:
 			eyeY -= fixEye;
-			glutPostRedisplay();
+			cout << eyeX << " " << eyeY << " " << eyeZ << endl;
+			if (eyeY >= 2) {
+				glutPostRedisplay();
+			} else {
+				eyeY = 2;
+			}
+			
 			break;
 		case GLUT_KEY_DOWN:
 			eyeY += fixEye;
-			glutPostRedisplay();
+			
+			if (eyeY <= 38) {
+				glutPostRedisplay();
+			} else {
+				eyeY = 38;
+			}
+			cout << eyeX << " " << eyeY << " " << eyeZ << endl;
+			
 			break;
 	}
 }
